@@ -37,6 +37,58 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_si(char *args) {
+  if (args == NULL) {
+    cpu_exec(1);
+    return 0;
+  }
+  char *steps = strtok(NULL, " ");
+  Assert(atoi(steps), "非法输入");
+  int n = atoi(steps);
+  cpu_exec(n);
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if (args == NULL) {
+    // 这里到底是直接退出好呢? 还是重来?
+    // Assert(0, "缺少参数");
+    Log("Please give one args from 'r' and 'w'");
+    return 0;
+  }
+  // 看起来多此一举, 但是其作用是忽略所有的空白字符
+  char* arg = strtok(NULL, " ");
+  if (strcmp(arg, "r") == 0) {
+    isa_reg_display();
+  }
+  else if (strcmp(arg, "w") == 0) {
+    // TODO: 实现打印监视点信息
+    TODO();
+  }
+  else {
+    Log("undefined info args");
+  } 
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  TODO();
+}
+
+static int cmd_p(char *args) {
+  if (args == NULL) {
+    Log("Please give me a expression");
+    return 0;
+  }
+  // 如果 args = "   1   + 1" 那么 arg = "1". 显然不符合要求
+  // char *arg = strtok(NULL, " ");
+  bool success = true;
+  word_t val = expr(args, &success);
+  if (success == true)
+    printf("0x%08x\t%d\n", val, val);
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -47,6 +99,11 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
+	{ "si", "Single Step Execution", cmd_si},
+  { "info", "Print register and watch point info", cmd_info},
+  { "x", "Scan the memory", cmd_x},
+  { "p", "Evaluate the expression", cmd_p},
+
 
   /* TODO: Add more commands */
 
@@ -93,7 +150,7 @@ void ui_mainloop() {
     /* treat the remaining string as the arguments,
      * which may need further parsing
      */
-    char *args = cmd + strlen(cmd) + 1;
+    char *args = cmd + strlen(cmd) + 1; // 如果不仅仅是一个空格呢?
     if (args >= str_end) {
       args = NULL;
     }

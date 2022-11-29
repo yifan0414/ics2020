@@ -42,6 +42,16 @@ void reg_test() {
 }
 
 void isa_reg_display() {
+  // printf("eax\t0x%08x\t%d\n", cpu.eax, cpu.eax);
+  printf("eax\t" FMT_WORD "\t%d\n", cpu.eax, cpu.eax);
+	printf("ecx\t" FMT_WORD "\t%d\n", cpu.ecx, cpu.ecx);
+	printf("edx\t" FMT_WORD "\t%d\n", cpu.edx, cpu.edx);
+	printf("ebx\t" FMT_WORD "\t%d\n", cpu.ebx, cpu.ebx);
+	printf("esp\t0x%08x\n", cpu.esp);
+	printf("ebp\t0x%08x\n", cpu.ebp);
+	printf("esi\t" FMT_WORD "\t%d\n", cpu.esi, cpu.esi);
+	printf("edi\t" FMT_WORD "\t%d\n", cpu.edi, cpu.edi);
+	printf("eip\t" FMT_WORD "\n", cpu.pc); // 是否可以输出当前模拟器执行的函数?
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {

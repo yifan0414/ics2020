@@ -85,7 +85,7 @@ static int cmd_p(char *args) {
   bool success = true;
   word_t val = expr(args, &success);
   if (success == true)
-    printf("0x%08x\t%d\n", val, val);
+    printf("0x%08x\t%u\n", val, val);
   return 0;
 }
 

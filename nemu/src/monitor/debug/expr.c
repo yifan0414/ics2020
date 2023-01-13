@@ -75,7 +75,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[65535] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -189,10 +189,11 @@ int find_dominant(int p, int q, bool* success)
 	int flag_ref = -1;
 	int l = 0;
 	for (int i = p; i <= q; i++) {
-    if (tokens[i].type != TK_OR && tokens[i].type != TK_AND && tokens[i].type != TK_NE && 
-        tokens[i].type != TK_EQ && tokens[i].type != '*' && tokens[i].type != '/' && 
-        tokens[i].type != '+' && tokens[i].type != '-' && tokens[i].type != TK_DEREF)
-        continue;
+    // if (tokens[i].type != TK_OR && tokens[i].type != TK_AND && tokens[i].type != TK_NE && 
+    //     tokens[i].type != TK_EQ && tokens[i].type != '*' && tokens[i].type != '/' && 
+    //     tokens[i].type != '+' && tokens[i].type != '-' && tokens[i].type != TK_DEREF &&
+    //     tokens[i].type != '(' && tokens[i].type != ')')
+    //     continue;
 		while (i < q && tokens[i].type == '(') {
 			l++;
 			i++;

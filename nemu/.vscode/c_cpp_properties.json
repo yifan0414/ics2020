@@ -3,13 +3,12 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/nemu/**"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "__ISA__=x86",
                 "__ISA_x86__",
-                "_ISA_H_=\"isa/x86.h\"",
-                "ISA_H=\"x86.h\""
+                "_ISA_H_=\"isa/x86.h\""
             ],
             "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "linux-gcc-x64",
@@ -18,3 +17,4 @@
     ],
     "version": 4
 }
+

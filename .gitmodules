@@ -1,0 +1,6 @@
+[submodule "am-kernels"]
+	path = am-kernels
+	url = https://github.com/NJU-ProjectN/am-kernels
+[submodule "fceux-am"]
+	path = fceux-am
+	url = https://github.com/NJU-ProjectN/fceux-am

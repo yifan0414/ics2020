@@ -3,13 +3,13 @@ NAME = nemu
 ISA ?= x86
 ISAS = $(shell ls src/isa/)
 ifeq ($(filter $(ISAS), $(ISA)), ) # ISA must be valid
-$(error Invalid ISA. Supported: $(ISAS))
+	$(error Invalid ISA. Supported: $(ISAS))
 endif
 
 ENGINE ?= interpreter
 ENGINES = $(shell ls src/engine/)
 ifeq ($(filter $(ENGINES), $(ENGINE)), ) # ENGINE must be valid
-$(error Invalid ENGINE. Supported: $(ENGINES))
+	$(error Invalid ENGINE. Supported: $(ENGINES))
 endif
 
 $(info Building $(ISA)-$(NAME)-$(ENGINE))
@@ -18,37 +18,37 @@ INC_DIR += ./include ./src/engine/$(ENGINE)
 BUILD_DIR ?= ./build
 
 ifdef SHARE
-SO = -so
-SO_CFLAGS = -fPIC -D_SHARE=1
-SO_LDLAGS = -shared -fPIC
+	SO = -so
+	SO_CFLAGS = -fPIC -D_SHARE=1
+	SO_LDLAGS = -shared -fPIC
 else
-LD_LIBS = -lSDL2 -lreadline -ldl
+	LD_LIBS = -lSDL2 -lreadline -ldl
 endif
 
 ifndef SHARE
-DIFF ?= kvm
-ifneq ($(ISA),x86)
-ifeq ($(DIFF),kvm)
-DIFF = qemu
-$(info KVM is only supported with ISA=x86, use QEMU instead)
+	DIFF ?= kvm
+	ifneq ($(ISA),x86)
+	ifeq ($(DIFF),kvm)
+	DIFF = qemu
+	$(info KVM is only supported with ISA=x86, use QEMU instead)
 endif
 endif
 
 ifeq ($(DIFF),qemu)
-DIFF_REF_PATH = $(NEMU_HOME)/tools/qemu-diff
-DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-qemu-so
-CFLAGS += -D__DIFF_REF_QEMU__
+	DIFF_REF_PATH = $(NEMU_HOME)/tools/qemu-diff
+	DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-qemu-so
+	CFLAGS += -D__DIFF_REF_QEMU__
 else ifeq ($(DIFF),kvm)
-DIFF_REF_PATH = $(NEMU_HOME)/tools/kvm-diff
-DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-kvm-so
-CFLAGS += -D__DIFF_REF_KVM__
+	DIFF_REF_PATH = $(NEMU_HOME)/tools/kvm-diff
+	DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-kvm-so
+	CFLAGS += -D__DIFF_REF_KVM__
 else ifeq ($(DIFF),nemu)
-DIFF_REF_PATH = $(NEMU_HOME)
-DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-nemu-interpreter-so
-CFLAGS += -D__DIFF_REF_NEMU__
-MKFLAGS = ISA=$(ISA) SHARE=1 ENGINE=interpreter
+	DIFF_REF_PATH = $(NEMU_HOME)
+	DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-nemu-interpreter-so
+	CFLAGS += -D__DIFF_REF_NEMU__
+	MKFLAGS = ISA=$(ISA) SHARE=1 ENGINE=interpreter
 else
-$(error invalid DIFF. Supported: qemu kvm nemu)
+	$(error invalid DIFF. Supported: qemu kvm nemu)
 endif
 endif
 
@@ -64,8 +64,8 @@ CC = gcc
 LD = gcc
 INCLUDES  = $(addprefix -I, $(INC_DIR))
 CFLAGS   += -O2 -MMD -Wall -Werror -ggdb3 $(INCLUDES) \
-            -D__ENGINE_$(ENGINE)__ \
-            -D__ISA__=$(ISA) -D__ISA_$(ISA)__ -D_ISA_H_=\"isa/$(ISA).h\"
+			-D__ENGINE_$(ENGINE)__ \
+			-D__ISA__=$(ISA) -D__ISA_$(ISA)__ -D_ISA_H_=\"isa/$(ISA).h\"
 
 # Files to be compiled
 SRCS = $(shell find src/ -name "*.c" | grep -v "isa\|engine")

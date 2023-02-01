@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "*.json": "jsonc",
+        "trap.h": "c",
+        "isa.h": "c",
+        "decode.h": "c",
+        "common.h": "c",
+        "time.h": "c",
+        "stdarg.h": "c",
+        "prctl.h": "c",
+        "common1.h": "c",
+        "type_traits": "c",
+        "cstdlib": "c",
+        "monitor.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Enabled",
+    "todo-tree.tree.scanMode": "current file",
+    "todo-tree.tree.showBadges": true,
+    "todo-tree.tree.disableCompactFolders": false,
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/yifansu/ics2020/nemu/build",
+            "binaryPath": "/home/yifansu/ics2020/nemu/build/x86-nemu-interpreter",
+            "binaryArgs": []
+        }
+    ]
+}

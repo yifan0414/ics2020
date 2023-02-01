@@ -4,7 +4,12 @@
         "trap.h": "c",
         "isa.h": "c",
         "decode.h": "c",
-        "common.h": "c"
+        "common.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "log.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

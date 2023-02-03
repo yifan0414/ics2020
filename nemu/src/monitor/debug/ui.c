@@ -43,8 +43,12 @@ static int cmd_si(char *args) {
     return 0;
   }
   char *steps = strtok(NULL, " ");
-  Assert(atoi(steps), "非法输入");
+  // Assert(atoi(steps), "非法输入"); // May be too dangerous
   int n = atoi(steps);
+  if (n == 0) {
+    Log("illegal arguments!");
+    return 0;
+  }
   cpu_exec(n);
   return 0;
 }
@@ -99,7 +103,7 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-	{ "si", "Single Step Execution", cmd_si},
+  { "si", "Single Step Execution", cmd_si},
   { "info", "Print register and watch point info", cmd_info},
   { "x", "Scan the memory", cmd_x},
   { "p", "Evaluate the expression", cmd_p},
@@ -119,13 +123,13 @@ static int cmd_help(char *args) {
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i ++) {
-      printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+      printf("%s\t - %s\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
-        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+        printf("%s\t - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
     }

@@ -90,6 +90,7 @@ app: $(BINARY)
 
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += --diff=$(DIFF_REF_SO)
+override ARGS += --batch
 
 # Command to execute NEMU
 IMG :=

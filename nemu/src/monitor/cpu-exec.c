@@ -86,6 +86,7 @@ void cpu_exec(uint64_t n) {
     g_nr_guest_instr ++;
 
 #ifdef DEBUG
+    // 在命令行中输出执行过的汇编指令
     asm_print(this_pc, seq_pc - this_pc, n < MAX_INSTR_TO_PRINT);
 
     /* TODO: check watchpoints here. */

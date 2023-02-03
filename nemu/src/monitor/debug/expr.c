@@ -72,7 +72,7 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[20];
 } Token;
 
 static Token tokens[65535] __attribute__((used)) = {};
@@ -154,7 +154,7 @@ bool check_parentheses(int p, int q, bool *success) {
 		return true;
 	}
   // 以下情况都是合法表达式, 但不一定被括号包围
-  assert(l == r); 
+  Assert(l == r, "括号不匹配"); 
   *success = true;
   // 1 + (2 * 3) + 4
 	if (tokens[p].type != '(' || tokens[q].type != ')')
@@ -238,7 +238,7 @@ word_t eval(int p, int q, bool *success) {
   if (p > q) {
     /* Bad expression */
     *success = false;
-    Log("Bad expression");
+    Log("Bad Expression!");
     return 0;
   }
   else if (p == q) {
@@ -248,13 +248,21 @@ word_t eval(int p, int q, bool *success) {
      */
 		// 0x30000
 		if (tokens[p].type == TK_HEX) {
-			return (uint32_t)strtol(tokens[p].str, NULL, 16);
+			return (uint32_t) strtol(tokens[p].str, NULL, 16);
 		}
 		// 30000
-		else if (tokens[p].type == TK_NUM){
+		else if (tokens[p].type == TK_NUM) {
 			// printf("num: %d\n", (uint32_t)strtol(tokens[p].str, NULL, 10));
-			return (uint32_t)strtol(tokens[p].str, NULL, 10);
+			return (uint32_t) strtol(tokens[p].str, NULL, 10);
 		}
+    else if (tokens[p].type == TK_REG) {
+      // 这里似乎有点凌乱，因为不能直接 #include "reg.h"
+      int retval = isa_reg_str2val(tokens[p].str + 1, success);
+      if (retval == -1) {
+        return 0;
+      }
+      return cpu.gpr[retval]._32;
+    }
 		else {
 			return 0;
 		}

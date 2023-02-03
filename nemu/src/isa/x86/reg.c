@@ -54,6 +54,26 @@ void isa_reg_display() {
 	printf("eip\t" FMT_WORD "\n", cpu.pc); // 是否可以输出当前模拟器执行的函数?
 }
 
+// 这个函数将寄存器名字转换为寄存器索引
 word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+  for (int i = 0; i < sizeof(regsl) / sizeof(char *); i++) {
+    if (strcmp(s, regsl[i]) == 0) {
+      return i;
+    }
+  }
+
+  // for (int i = 0; i < sizeof(regsw) / sizeof(char *); i++) {
+  //   if (strcmp(s, regsw[i]) == 0) {
+  //     return i;
+  //   }
+  // }
+
+  // for (int i = 0; i < sizeof(regsb) / sizeof(char *); i++) {
+  //   if (strcmp(s, regsb[i]) == 0) {
+  //     return i;
+  //   }
+  // }
+
+  *success = false;
+  return -1;
 }

@@ -6,7 +6,10 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/home/yifansu/ics2020/nemu/build/x86-nemu-interpreter",
-            "args": [],
+            "args": [
+                "--log=./build/nemu-log.txt",
+                "--diff=/home/yifansu/ics2020/nemu/tools/kvm-diff/build/x86-kvm-so",
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

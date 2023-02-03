@@ -11,7 +11,10 @@
         "common1.h": "c",
         "type_traits": "c",
         "cstdlib": "c",
-        "monitor.h": "c"
+        "monitor.h": "c",
+        "stdint.h": "c",
+        "reg.h": "c",
+        "history.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

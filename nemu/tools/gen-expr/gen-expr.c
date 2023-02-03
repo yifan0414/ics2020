@@ -4,12 +4,18 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_BUF_SIZE 65535
 static const int max_whitespace_num = 5;
 
 // this should be enough
 static char buf[65536] = {};
+
+
+// overflow flag
+
+bool overflow_flag = false;
 
 static inline uint32_t choose(uint32_t n) {
   return rand() % n;
@@ -23,10 +29,13 @@ void gen_rand_whitespace() { //随机插入空格
 
 static inline void gen_rand_expr();
 void gen(char* str) {
-  //如果将要溢出，则重来
-  if (strlen(buf) + strlen(str) + 5 > MAX_BUF_SIZE) {
+  if (overflow_flag == true) return;
+  //如果将要溢出，则重来 bug
+  if (strlen(buf) + 5 > MAX_BUF_SIZE) {
     memset(buf, 0, sizeof(buf));
+    overflow_flag = false;
     gen_rand_expr();
+    overflow_flag = true;
     return;
   }
   sprintf(buf + strlen(buf), "%s", str);
@@ -34,12 +43,14 @@ void gen(char* str) {
 }
 
 void gen_num() {
+  if (overflow_flag == true) return;
   char strNum[15];
   sprintf(strNum, "%d", rand() % 32767);
   gen(strNum);
 }
 
 void gen_rand_op() {
+  if (overflow_flag == true) return;
   switch (choose(4)) {
     case 0: gen("+"); break;
     case 1: gen("-"); break;
@@ -48,7 +59,8 @@ void gen_rand_op() {
   }
 }
 
-static inline void gen_rand_expr() {
+static void gen_rand_expr() {
+  if (overflow_flag == true) return;
   switch (choose(3)) {
     case 0: gen_num(); break;
     case 1: gen("("); gen_rand_expr(); gen(")"); break;
@@ -81,6 +93,7 @@ int main(int argc, char *argv[]) {
   int i;
   for (i = 0; i < loop; i ++) {
     memset(buf, 0, sizeof(buf));
+    overflow_flag = false;
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -90,7 +103,7 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc -Werror=div-by-zero /tmp/.code.c -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");

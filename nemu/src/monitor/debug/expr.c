@@ -14,10 +14,13 @@ enum {
   TK_SYMB,   // 260 符号
   TK_HEX,  	 // 261 十六进制
   TK_DEREF,  // 解引用
+  TK_MINUS,  // 负数
   TK_NE,		 // !=
+  TK_LE,     // <=
+  TK_GE,     // >=
   TK_NOT,    // !
   TK_AND,    // &&
-  TK_OR,
+  TK_OR,     // ||
   /* TODO: Add more token types */
 
 };
@@ -38,6 +41,10 @@ static struct rule {
 	{"\\/", '/'},        // \\/ => \/, regex元字符为 /
 	{"\\(", '('},
 	{"\\)", ')'},
+  {">=", TK_GE},
+  {"<=", TK_LE},
+  {"<", '<'},
+  {">", '>'},
   {"==", TK_EQ},        // equal
   {"!=", TK_NE},
   {"!", TK_NOT},
@@ -46,7 +53,7 @@ static struct rule {
 	{"0x[a-f0-9]+", TK_HEX},
 	{"[0-9]+", TK_NUM},
 	{"[a-zA-Z\\_][0-9a-zA-Z\\_]*", TK_SYMB},
-	{"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip)", TK_REG},
+	{"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi)", TK_REG},
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -72,7 +79,7 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[20];
+  char str[32];
 } Token;
 
 static Token tokens[65535] __attribute__((used)) = {};
@@ -112,11 +119,8 @@ static bool make_token(char *e) {
         Assert((substr_len < 32), "缓冲区溢出");
         strncpy(tokens[nr_token].str, substr_start, substr_len);        
         tokens[nr_token].str[substr_len] = '\0';
-        switch (rules[i].token_type) {
-          default:
-            tokens[nr_token].type = rules[i].token_type;
-            nr_token++;
-        }
+        tokens[nr_token].type = rules[i].token_type;
+        nr_token++;
         break;
       }
     }
@@ -184,16 +188,15 @@ int find_dominant(int p, int q, bool* success)
 	int flag_OR = -1;
 	int flag_AND = -1;
 	int flag_NE_EQ = -1;
+  int flag_LE_GE = -1;
+  int flag_L_G = -1;
 	int flag_mul_div = -1;
 	int flag_add_sub = -1;
 	int flag_ref = -1;
+  int flag_not = -1;
+  int flag_minus = -1;
 	int l = 0;
 	for (int i = p; i <= q; i++) {
-    // if (tokens[i].type != TK_OR && tokens[i].type != TK_AND && tokens[i].type != TK_NE && 
-    //     tokens[i].type != TK_EQ && tokens[i].type != '*' && tokens[i].type != '/' && 
-    //     tokens[i].type != '+' && tokens[i].type != '-' && tokens[i].type != TK_DEREF &&
-    //     tokens[i].type != '(' && tokens[i].type != ')')
-    //     continue;
 		while (i < q && tokens[i].type == '(') {
 			l++;
 			i++;
@@ -208,9 +211,13 @@ int find_dominant(int p, int q, bool* success)
 		flag_OR = tokens[i].type == TK_OR? i : flag_OR;
 		flag_AND = tokens[i].type == TK_AND? i : flag_AND;
 		flag_NE_EQ = (tokens[i].type == TK_NE || tokens[i].type == TK_EQ)? i : flag_NE_EQ;
+    flag_LE_GE = (tokens[i].type == TK_LE || tokens[i].type == TK_GE)? i : flag_LE_GE; 
+    flag_L_G = (tokens[i].type == '>' || tokens[i].type == '<')? i : flag_L_G; 
 		flag_mul_div = (tokens[i].type == '*' || tokens[i].type == '/')? i : flag_mul_div;
 		flag_add_sub = (tokens[i].type == '+' || tokens[i].type == '-')? i : flag_add_sub;
 		flag_ref = tokens[i].type == TK_DEREF? i : flag_ref;
+    flag_minus = tokens[i].type == TK_MINUS? i : flag_minus;
+    flag_not = tokens[i].type == TK_NOT? i : flag_not;
 	}
 	if (flag_OR != -1) {
 		return flag_OR;
@@ -218,13 +225,21 @@ int find_dominant(int p, int q, bool* success)
 		return flag_AND;
 	} else if (flag_NE_EQ != -1) {
 		return flag_NE_EQ;
-	} else if (flag_add_sub != -1) {
+	} else if (flag_LE_GE != -1) {
+    return flag_LE_GE;
+  } else if (flag_L_G != -1) {
+    return flag_L_G;
+  } else if (flag_add_sub != -1) {
 		return flag_add_sub;
 	} else if (flag_mul_div != -1) {
 		return flag_mul_div;
 	} else if (flag_ref != -1) {
 		return flag_ref;
-	}
+	} else if (flag_minus != -1) {
+    return flag_minus;
+  } else if (flag_not != -1) {
+    return flag_not;
+  }
 	else {
     Log("未找到主运算符");
     *success = false;
@@ -264,6 +279,8 @@ word_t eval(int p, int q, bool *success) {
       return cpu.gpr[retval]._32;
     }
 		else {
+      Log("表达式未实现！");
+      *success = false;
 			return 0;
 		}
   }
@@ -283,6 +300,11 @@ word_t eval(int p, int q, bool *success) {
 		// 	int address_tmp = eval(op + 1, q, success);
 		// 	return vaddr_read(address_tmp, SREG_CS, 4); // 4 个字节？
 		// }
+    if (tokens[op].type == TK_NOT) {
+      return !eval(op + 1, q, success);
+    } else if (tokens[op].type == TK_MINUS) {
+      return -eval(op + 1, q, success);
+    }
 		// printf("主运算符号为：%d\n", tokens[op].type);
 		int val1 = eval(p, op - 1, success);
 		int val2 = eval(op + 1, q, success);
@@ -299,8 +321,12 @@ word_t eval(int p, int q, bool *success) {
           return 0;
         }
         return val1 / val2;
+      case '>': return val1 > val2;
+      case '<': return val1 < val2;
 			case TK_EQ : return val1 == val2;
 			case TK_NE : return val1 != val2;
+      case TK_LE : return val1 <= val2;
+      case TK_GE : return val1 <= val2;
 			case TK_AND: return val1 && val2;
 			case TK_OR : return val1 || val2;
 			default: *success = false; return 0;
@@ -317,9 +343,21 @@ word_t expr(char *e, bool *success) {
 
   /* TODO: Insert codes to evaluate the expression. */
   // TODO();
+  for(int i = 0; i < nr_token; i ++) {
+      if(tokens[i].type == '-' && (i == 0 || tokens[i - 1].type == TK_AND || 
+        tokens[i - 1].type == TK_OR || tokens[i - 1].type == TK_EQ ||
+        tokens[i - 1].type == TK_NE || tokens[i - 1].type == TK_NOT ||
+        tokens[i - 1].type == TK_LE || tokens[i - 1].type == TK_GE ||
+        tokens[i - 1].type == '>' || tokens[i - 1].type == '<' ||
+        tokens[i - 1].type == '+' || tokens[i - 1].type == '-' ||
+        tokens[i - 1].type == '*' || tokens[i - 1].type == '/'
+        ) ) {
+          tokens[i].type = TK_MINUS;
+      }
+  }
+  // 打印 tokens
   // for (int i = 0; i < nr_token; i++) {
   //   printf("type: %d %s\n", tokens[i].type, tokens[i].str);
   // }
-
   return eval(0, nr_token - 1, success);
 }

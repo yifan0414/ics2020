@@ -69,7 +69,7 @@ static int cmd_info(char *args) {
   }
   else if (strcmp(arg, "w") == 0) {
     // TODO: 实现打印监视点信息
-    TODO();
+    list_wp();
   }
   else {
     Log("undefined info args");
@@ -183,6 +183,19 @@ static int cmd_p(char *args) {
   return 0;
 }
 
+static int cmd_w(char *args) {
+  WP* wp = new_wp();
+  wp->expr = strdup(args); // copy the args, remember free
+  assert(wp->expr != NULL);
+  bool success = true;
+  wp->val = expr(wp->expr, &success);
+  if (success == false) {
+    Log("求值失败");
+    return 0;
+  }
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -197,7 +210,7 @@ static struct {
   { "info", "Print register and watch point info", cmd_info},
   { "x", "Scan the memory", cmd_x},
   { "p", "Evaluate the expression", cmd_p},
-
+  { "w", "set the watchpoint", cmd_w},
 
   /* TODO: Add more commands */
 

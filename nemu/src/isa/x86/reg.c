@@ -61,6 +61,9 @@ word_t isa_reg_str2val(const char *s, bool *success) {
       return cpu.gpr[i]._32;
     }
   }
+  if (strcmp(s, "eip") == 0) {
+      return cpu.pc;
+  }
 
   // for (int i = 0; i < sizeof(regsw) / sizeof(char *); i++) {
   //   if (strcmp(s, regsw[i]) == 0) {

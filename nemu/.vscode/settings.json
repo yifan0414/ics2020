@@ -16,7 +16,9 @@
         "reg.h": "c",
         "history.h": "c",
         "expr.h": "c",
-        "paddr.h": "c"
+        "paddr.h": "c",
+        "readline.h": "c",
+        "watchpoint.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

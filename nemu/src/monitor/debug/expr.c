@@ -54,7 +54,7 @@ static struct rule {
 	{"0x[a-f0-9]+", TK_HEX},
 	{"[0-9]+", TK_NUM},
 	{"[a-zA-Z\\_][0-9a-zA-Z\\_]*", TK_SYMB},
-	{"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi)", TK_REG},
+	{"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip)", TK_REG},
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )

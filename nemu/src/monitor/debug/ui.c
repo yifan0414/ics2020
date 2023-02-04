@@ -1,6 +1,7 @@
 #include <isa.h>
 #include "expr.h"
 #include "watchpoint.h"
+#include <memory/paddr.h>
 
 #include <stdlib.h>
 #include <readline/readline.h>
@@ -76,8 +77,37 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-  TODO();
+	if (args == NULL) {
+		Log("Command Format: \"x num addr\"");
+		return 0;
+	}
+ 
+  bool success = true;
+  int byte_num = -1;
+  int addr = 0;
+  char address1[32] = {'\0'};
+  if (sscanf(args, "%d %[^\n]", &byte_num, address1) != 2) {
+    Log("invalid expression: '%s'\n", args);
+    return 0;
+  }
+  printf("address1: %s\n", address1);
+  addr = expr(address1, &success);
+  if (success == false) {
+    Log("invalid expression: '%s'\n", args);
+    return 0;
+  }
+
+	printf("%d %d\n", byte_num, addr);
+	byte_num *= 4;
+	for (int i = -byte_num / 2; i < byte_num / 2; i += 4) {
+		if (i == 0 || i == -2) printf("\x1B[31m==>");
+		else printf("   ");
+        printf("0x%08x:\t%08x\n\x1B[0m", addr + i, paddr_read((uint32_t) addr + i, 4));
+		// why hw_mem_read implicate declearation error?
+	}
+	return 0;
 }
+
 
 static int cmd_p(char *args) {
   if (args == NULL) {

@@ -14,7 +14,9 @@
         "monitor.h": "c",
         "stdint.h": "c",
         "reg.h": "c",
-        "history.h": "c"
+        "history.h": "c",
+        "expr.h": "c",
+        "paddr.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

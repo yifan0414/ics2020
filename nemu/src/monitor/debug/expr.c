@@ -1,4 +1,5 @@
 #include <isa.h>
+#include <memory/paddr.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -272,11 +273,12 @@ word_t eval(int p, int q, bool *success) {
 		}
     else if (tokens[p].type == TK_REG) {
       // 这里似乎有点凌乱，因为不能直接 #include "reg.h"
-      int retval = isa_reg_str2val(tokens[p].str + 1, success);
-      if (retval == -1) {
+      uint32_t retval = isa_reg_str2val(tokens[p].str + 1, success);
+      if (*success == false) {
+        Log("寄存器值获取失败");
         return 0;
       }
-      return cpu.gpr[retval]._32;
+      return retval;
     }
 		else {
       Log("表达式未实现！");
@@ -304,8 +306,10 @@ word_t eval(int p, int q, bool *success) {
       return !eval(op + 1, q, success);
     } else if (tokens[op].type == TK_MINUS) {
       return -eval(op + 1, q, success);
+    } else if (tokens[op].type == TK_DEREF) {
+      return paddr_read(eval(op + 1, q, success), 4);
     }
-		// printf("主运算符号为：%d\n", tokens[op].type);
+		// printf("主运算符号为：%d\n", tokens[op].type );
 		int val1 = eval(p, op - 1, success);
 		int val2 = eval(op + 1, q, success);
 		// printf("val1:%d val2:%d\n", val1, val2);
@@ -326,7 +330,7 @@ word_t eval(int p, int q, bool *success) {
 			case TK_EQ : return val1 == val2;
 			case TK_NE : return val1 != val2;
       case TK_LE : return val1 <= val2;
-      case TK_GE : return val1 <= val2;
+      case TK_GE : return val1 >= val2;
 			case TK_AND: return val1 && val2;
 			case TK_OR : return val1 || val2;
 			default: *success = false; return 0;
@@ -353,6 +357,18 @@ word_t expr(char *e, bool *success) {
         tokens[i - 1].type == '*' || tokens[i - 1].type == '/'
         ) ) {
           tokens[i].type = TK_MINUS;
+      }
+  }
+  for(int i = 0; i < nr_token; i ++) {
+      if(tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == TK_AND || 
+        tokens[i - 1].type == TK_OR || tokens[i - 1].type == TK_EQ ||
+        tokens[i - 1].type == TK_NE || tokens[i - 1].type == TK_NOT ||
+        tokens[i - 1].type == TK_LE || tokens[i - 1].type == TK_GE ||
+        tokens[i - 1].type == '>' || tokens[i - 1].type == '<' ||
+        tokens[i - 1].type == '+' || tokens[i - 1].type == '-' ||
+        tokens[i - 1].type == '*' || tokens[i - 1].type == '/'
+        ) ) {
+          tokens[i].type = TK_DEREF;
       }
   }
   // 打印 tokens

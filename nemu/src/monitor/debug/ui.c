@@ -9,6 +9,7 @@
 
 void cpu_exec(uint64_t);
 int is_batch_mode();
+void asm_print(vaddr_t this_pc, int instr_len, bool print_flag);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -78,34 +79,93 @@ static int cmd_info(char *args) {
 
 static int cmd_x(char *args) {
 	if (args == NULL) {
-		Log("Command Format: \"x num addr\"");
+		Log("Command Format: \"x format address\"");
 		return 0;
 	}
  
   bool success = true;
-  int byte_num = -1;
-  int addr = 0;
-  char address1[32] = {'\0'};
-  if (sscanf(args, "%d %[^\n]", &byte_num, address1) != 2) {
+  char arg1[32] = {'\0'};
+  char arg2[32] = {'\0'};
+  if (sscanf(args, "%s %[^\n]", arg1, arg2) != 2) {
     Log("invalid expression: '%s'\n", args);
     return 0;
   }
-  printf("address1: %s\n", address1);
-  addr = expr(address1, &success);
+  int length = 1;
+  char format = 'x';
+  char size = 'w';
+  // if (sscanf(arg1, "%d%c%c", &length, &format, &size) != 3) {
+  //   Log("Not conform to the format: \"x format expression\"");
+  //   return 0;
+  // }
+  sscanf(arg1, "%d%c%c", &length, &format, &size);
+  int addr = expr(arg2, &success);
   if (success == false) {
     Log("invalid expression: '%s'\n", args);
     return 0;
   }
 
-	printf("%d %d\n", byte_num, addr);
-	byte_num *= 4;
-	for (int i = -byte_num / 2; i < byte_num / 2; i += 4) {
-		if (i == 0 || i == -2) printf("\x1B[31m==>");
-		else printf("   ");
-        printf("0x%08x:\t%08x\n\x1B[0m", addr + i, paddr_read((uint32_t) addr + i, 4));
-		// why hw_mem_read implicate declearation error?
-	}
-	return 0;
+  int single_size = 0;
+  if (size == 'b') {
+    single_size = 1;
+  } else if (size == 'h') {
+    single_size = 2;
+  } else if (size == 'w') {
+    single_size = 4;
+  } else {
+    Log("Undefined size format!");
+    return 0;
+  }
+
+  // TODO: 这一段代码非常 shit，怎么提高可维护性呢？两个变量
+  if (format == 'x') {
+    for (int i = 0; i <= length / (8 / single_size); i ++) {
+      printf("\x1B[34m0x%x:\x1B[0m\t", addr + i * 8);
+      for (int j = 0; j + i * (8 / single_size) < length && j < (8 / single_size); j++) {
+        if (single_size == 1) {
+          printf("0x%02x\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        } else if (single_size == 2) {
+          printf("0x%04x\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        } else if (single_size == 4) {
+          printf("0x%08x\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        }
+      }
+      printf("\n");
+    }
+  } else if (format == 'd') {
+    for (int i = 0; i <= length / (8 / single_size); i ++) {
+      printf("\x1B[34m0x%x:\x1B[0m\t", addr + i * 8);
+      for (int j = 0; j < length && j < (8 / single_size); j++) {
+        if (single_size == 1) {
+          printf("%d\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        } else if (single_size == 2) {
+          printf("%d\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        } else if (single_size == 4) {
+          printf("%d\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        }
+      }
+      printf("\n");
+    }
+  } else if (format == 'u') {
+    for (int i = 0; i <= length / (8 / single_size); i ++) {
+      printf("\x1B[34m0x%x:\x1B[0m\t", addr + i * 8);
+      for (int j = 0; j < length && j < (8 / single_size); j++) {
+        if (single_size == 1) {
+          printf("%u\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        } else if (single_size == 2) {
+          printf("%u\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        } else if (single_size == 4) {
+          printf("%u\t", paddr_read((uint32_t) addr + i * 8 + j * single_size, single_size));
+        }
+      }
+      printf("\n");
+    }
+  } else if (format == 'i') {
+    // 这是模拟器，没办法提前分析汇编指令
+    Log("Undefined output format \"i\"");
+  } else {
+    Log("Undefined output format \"%c\"", format);
+  } 
+  return 0;
 }
 
 

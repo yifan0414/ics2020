@@ -118,7 +118,7 @@ static int cmd_x(char *args) {
 
   // TODO: 这一段代码非常 shit，怎么提高可维护性呢？两个变量
   if (format == 'x') {
-    for (int i = 0; i <= length / (8 / single_size); i ++) {
+    for (int i = 0; i < (float) length / (8 / single_size); i ++) {
       printf("\x1B[34m0x%x:\x1B[0m\t", addr + i * 8);
       for (int j = 0; j + i * (8 / single_size) < length && j < (8 / single_size); j++) {
         if (single_size == 1) {
@@ -132,7 +132,7 @@ static int cmd_x(char *args) {
       printf("\n");
     }
   } else if (format == 'd') {
-    for (int i = 0; i <= length / (8 / single_size); i ++) {
+    for (int i = 0; i < (float) length / (8 / single_size); i ++) {
       printf("\x1B[34m0x%x:\x1B[0m\t", addr + i * 8);
       for (int j = 0; j < length && j < (8 / single_size); j++) {
         if (single_size == 1) {
@@ -146,7 +146,7 @@ static int cmd_x(char *args) {
       printf("\n");
     }
   } else if (format == 'u') {
-    for (int i = 0; i <= length / (8 / single_size); i ++) {
+    for (int i = 0; i < (float) length / (8 / single_size); i ++) {
       printf("\x1B[34m0x%x:\x1B[0m\t", addr + i * 8);
       for (int j = 0; j < length && j < (8 / single_size); j++) {
         if (single_size == 1) {

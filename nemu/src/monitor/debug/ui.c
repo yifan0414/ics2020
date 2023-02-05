@@ -70,8 +70,9 @@ static int cmd_info(char *args) {
   else if (strcmp(arg, "w") == 0) {
     // TODO: 实现打印监视点信息
     list_wp();
-  }
-  else {
+  } else if (strcmp(arg, "f") == 0) {
+    list_free();
+  } else {
     Log("undefined info args");
   } 
   return 0;
@@ -196,6 +197,21 @@ static int cmd_w(char *args) {
   return 0;
 }
 
+static int cmd_d(char *args) {
+  if (args == NULL) {
+    Log("Undefined Format: d num");
+    return 0;
+  }
+  char *steps = strtok(NULL, " ");
+  int n = atoi(steps);
+  if (n == 0 && strlen(steps) != 1) {
+    Log("illegal arguments!");
+    return 0;
+  }
+  free_wp(n);
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -211,7 +227,7 @@ static struct {
   { "x", "Scan the memory", cmd_x},
   { "p", "Evaluate the expression", cmd_p},
   { "w", "set the watchpoint", cmd_w},
-
+  { "d", "delete the watchpoint", cmd_d},
   /* TODO: Add more commands */
 
 };

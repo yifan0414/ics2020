@@ -83,7 +83,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[65535] __attribute__((used)) = {};
+static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -96,7 +96,7 @@ static bool make_token(char *e) {
 	// 所以应该把整个tokens结构体清零
 	// 如果第一次 tokens[0].str = "10000";
 	// 第二次为 tokens[0].str = "1"; 则输出时仍然为 "10000"
-	// memset(tokens, 0, sizeof(tokens));
+	// 第一种方法memset(tokens, 0, sizeof(tokens));
 	// 第二种方法手动在字符串结尾加上 '\0' tokens[nr_token].str[substr_len] = '\0';
 
   while (e[position] != '\0') {

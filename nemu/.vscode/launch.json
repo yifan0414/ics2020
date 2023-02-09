@@ -5,10 +5,10 @@
             "name": "C/C++: make 生成和调试活动文件",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/yifansu/ics2020/nemu/build/x86-nemu-interpreter",
+            "program": "${workspaceFolder}/build/x86-nemu-interpreter",
             "args": [
                 "--log=./build/nemu-log.txt",
-                "--diff=/home/yifansu/ics2020/nemu/tools/kvm-diff/build/x86-kvm-so",
+                "--diff=${workspaceFolder}/tools/kvm-diff/build/x86-kvm-so",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

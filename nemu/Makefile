@@ -107,6 +107,7 @@ run: run-env
 	$(NEMU_EXEC)
 
 test: run-env
+	$(call git_commit, "run")
 	$(NEMU_EXEC) < in.txt
 
 gdb: run-env

@@ -18,7 +18,9 @@
         "expr.h": "c",
         "paddr.h": "c",
         "readline.h": "c",
-        "watchpoint.h": "c"
+        "watchpoint.h": "c",
+        "stdlib.h": "c",
+        "regex.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

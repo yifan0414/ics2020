@@ -11,6 +11,14 @@
 // empty decode helper
 #define decode_empty(s)
 
+/*
+  IDEXW(idx, id, ex, w) CASE_ENTRY(idx, concat(decode_, id),    concat(exec_, ex),  w)
+  IDEX(idx, id, ex)     CASE_ENTRY(idx, concat(decode_, id),    concat(exec_, ex),  0)
+  EXW(idx, ex, w)       CASE_ENTRY(idx, concat(decode_, empty), concat(exec_, ex),  w)
+  EX(idx, ex)           CASE_ENTRY(idx, concat(decode_, empty), concat(exec_, ex),  0)
+  EMPTY(idx)            CASE_ENTRY(idx, concat(decode_, empty), concat(exec_, inv), 0)
+*/
+
 #define IDEXW(idx, id, ex, w) CASE_ENTRY(idx, concat(decode_, id), concat(exec_, ex), w)
 #define IDEX(idx, id, ex)     IDEXW(idx, id, ex, 0)
 #define EXW(idx, ex, w)       IDEXW(idx, empty, ex, w)

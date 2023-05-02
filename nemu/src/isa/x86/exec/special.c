@@ -9,7 +9,7 @@ def_EHelper(nop) {
 def_EHelper(inv) {
   /* invalid opcode */
 
-  uint32_t temp[2];
+  uint32_t temp[2]; // 为什么这里要设置 temp[2]
   s->seq_pc = cpu.pc;
   temp[0] = instr_fetch(&s->seq_pc, 4);
   temp[1] = instr_fetch(&s->seq_pc, 4);

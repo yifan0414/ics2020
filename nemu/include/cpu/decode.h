@@ -19,6 +19,10 @@ typedef struct {
   char str[OP_STR_SIZE];
 } Operand;
 
+/**
+ * @brief 用于存放在执行一条指令过程中的译码和执行信息, 包括操作数的类型, 宽度, 值等信息.
+ *        还有一些信息是ISA相关的, NEMU用一个结构类型ISADecodeInfo来对这些信息进行抽象
+ */
 typedef struct {
   uint32_t opcode;
   vaddr_t seq_pc;  // sequential pc

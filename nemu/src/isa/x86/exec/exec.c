@@ -5,8 +5,9 @@
 static inline void set_width(DecodeExecState *s, int width) {
   if (width == -1) return;
   if (width == 0) {
-    width = s->isa.is_operand_size_16 ? 2 : 4;
+    width = s->isa.is_operand_size_16 ? 2 : 4; // suffix = 0x66 -> is_operand_size_16 = 1
   }
+  // 这是 width = 1 的结果, 8位 1 个字节 
   s->src1.width = s->dest.width = s->src2.width = width;
 }
 
@@ -72,7 +73,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
   uint8_t opcode;
 again:
   opcode = instr_fetch(&s->seq_pc, 1);
-  s->opcode = opcode;
+  s->opcode = opcode; // 为什么这里的 opcode 是 32 位呢
   switch (opcode) {
     EX   (0x0f, 2byte_esc)
     IDEXW(0x80, I2E, gp1, 1)
@@ -111,6 +112,7 @@ again:
     IDEXW(0xd2, gp2_cl2E, gp2, 1)
     IDEX (0xd3, gp2_cl2E, gp2)
     EX   (0xd6, nemu_trap)
+    IDEX (0xe8, call_rel, call)
     IDEXW(0xf6, E, gp3, 1)
     IDEX (0xf7, E, gp3)
     IDEXW(0xfe, E, gp4, 1)

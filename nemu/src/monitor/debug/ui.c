@@ -172,7 +172,7 @@ static int cmd_x(char *args) {
 
 static int cmd_p(char *args) {
   if (args == NULL) {
-    Log("Please give me a expression");
+    Log("Please give me a expression.");
     return 0;
   }
   // 如果 args = "   1   + 1" 那么 arg = "1". 显然不符合要求
@@ -185,6 +185,10 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_w(char *args) {
+  if (args == NULL) {
+    Log("Please give me a argument.");
+    return 0;
+  }
   WP* wp = new_wp();
   wp->expr = strdup(args); // copy the args, remember free
   assert(wp->expr != NULL);

@@ -20,7 +20,10 @@
         "readline.h": "c",
         "watchpoint.h": "c",
         "stdlib.h": "c",
-        "regex.h": "c"
+        "regex.h": "c",
+        "exec.h": "c",
+        "cc.h": "c",
+        "typeinfo": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

@@ -1,9 +1,9 @@
 #ifndef __RTL_PSEUDO_H__
 #define __RTL_PSEUDO_H__
 
-#ifndef __RTL_RTL_H__
-#error "Should be only included by <rtl/rtl.h>"
-#endif
+// #ifndef __RTL_RTL_H__
+// #error "Should be only included by <rtl/rtl.h>"
+// #endif
 
 /* RTL pseudo instructions */
 

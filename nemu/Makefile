@@ -53,6 +53,7 @@ endif
 endif
 
 OBJ_DIR ?= $(BUILD_DIR)/obj-$(ISA)-$(ENGINE)$(SO)
+# PRE_DIR ?= $(BUILD_DIR)/obj-$(ISA)-$(ENGINE)$(SO)/include
 BINARY ?= $(BUILD_DIR)/$(ISA)-$(NAME)-$(ENGINE)$(SO)
 
 include Makefile.git
@@ -68,17 +69,42 @@ CFLAGS   += -O2 -MMD -Wall -Werror -ggdb3 $(INCLUDES) \
 			-D__ISA__=$(ISA) -D__ISA_$(ISA)__ -D_ISA_H_=\"isa/$(ISA).h\"
 
 # Files to be compiled
-SRCS = $(shell find src/ -name "*.c" | grep -v "isa\|engine")
+SRCS  = $(shell find src/ -name "*.c" | grep -v "isa\|engine")
 SRCS += $(shell find src/isa/$(ISA) -name "*.c")
 SRCS += $(shell find src/engine/$(ENGINE) -name "*.c")
-OBJS = $(SRCS:src/%.c=$(OBJ_DIR)/%.o)
-
+PRES  = $(SRCS:src/%.c=$(OBJ_DIR)/%.i)
+# HEADER = $(wildcard $(INC_DIR)/%.h)
+HEADER = $(shell find include/ -name "*.h")
+HEADER += $(shell find src/engine/$(ENGINE) -name "*.h")
+# HEADERS = $(HEADER:include/%.h=$(OBJ_DIR)/include/%.i )
+# HEADERS += $(HEADER:src/engine/$(engine)/%.h=$(OBJ_DIR)/include/src/engine/$(engine)/%.i)
+HEADERS = $(patsubst %.h, $(OBJ_DIR)/%.i, $(HEADER))
+OBJS  = $(SRCS:src/%.c=$(OBJ_DIR)/%.o)
+$(info SRCS = $(SRCS))
+$(info OBJS = $(OBJS))
+$(info HEADER = $(HEADER))
+$(info HEADERS = $(HEADERS))
 # Compilation patterns
 $(OBJ_DIR)/%.o: src/%.c
 	@echo + CC $<
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(SO_CFLAGS) -c -o $@ $<
 
+
+# $(OBJ_DIR)/%.i: src/%.c
+# 	@echo + CC $<
+# 	@mkdir -p $(dir $@)
+# 	@$(CC) $(CFLAGS) $(SO_CFLAGS) -E -o $@ $<
+
+$(OBJ_DIR)/include/%.i: include/%.h
+	@echo + CC $<
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(SO_CFLAGS) -E -o $@ $<
+
+$(OBJ_DIR)/src/%.i: src/%.h
+	@echo + CC $<
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(SO_CFLAGS) -E -o $@ $<
 
 # Depencies
 -include $(OBJS:.o=.d)
@@ -101,6 +127,8 @@ $(BINARY): $(OBJS)
 	@$(LD) -O2 -rdynamic $(SO_LDLAGS) -o $@ $^ $(LD_LIBS)
 
 run-env: $(BINARY) $(DIFF_REF_SO)
+
+pre: $(HEADERS)
 
 run: run-env
 	$(call git_commit, "run")

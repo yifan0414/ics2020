@@ -23,7 +23,9 @@
         "regex.h": "c",
         "exec.h": "c",
         "cc.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "debug.h": "c",
+        "*.tcc": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

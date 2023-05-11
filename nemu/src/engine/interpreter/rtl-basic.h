@@ -140,11 +140,13 @@ static inline def_rtl(host_sm, void *addr, const rtlreg_t *src1, int len) {
 
 // control
 
+// 直接跳转
 static inline def_rtl(j, vaddr_t target) {
   s->jmp_pc = target;
   s->is_jmp = true;
 }
 
+// 间接跳转
 static inline def_rtl(jr, rtlreg_t *target) {
   s->jmp_pc = *target;
   s->is_jmp = true;

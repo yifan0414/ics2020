@@ -80,10 +80,10 @@ HEADER += $(shell find src/engine/$(ENGINE) -name "*.h")
 # HEADERS += $(HEADER:src/engine/$(engine)/%.h=$(OBJ_DIR)/include/src/engine/$(engine)/%.i)
 HEADERS = $(patsubst %.h, $(OBJ_DIR)/%.i, $(HEADER))
 OBJS  = $(SRCS:src/%.c=$(OBJ_DIR)/%.o)
-$(info SRCS = $(SRCS))
-$(info OBJS = $(OBJS))
-$(info HEADER = $(HEADER))
-$(info HEADERS = $(HEADERS))
+# $(info SRCS = $(SRCS))
+# $(info OBJS = $(OBJS))
+# $(info HEADER = $(HEADER))
+# $(info HEADERS = $(HEADERS))
 # Compilation patterns
 $(OBJ_DIR)/%.o: src/%.c
 	@echo + CC $<

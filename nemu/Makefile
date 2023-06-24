@@ -28,28 +28,28 @@ endif
 ifndef SHARE
 	DIFF ?= kvm
 	ifneq ($(ISA),x86)
-	ifeq ($(DIFF),kvm)
-	DIFF = qemu
-	$(info KVM is only supported with ISA=x86, use QEMU instead)
-endif
-endif
+		ifeq ($(DIFF),kvm)
+			DIFF = qemu
+			$(info KVM is only supported with ISA=x86, use QEMU instead)
+		endif
+	endif
 
-ifeq ($(DIFF),qemu)
-	DIFF_REF_PATH = $(NEMU_HOME)/tools/qemu-diff
-	DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-qemu-so
-	CFLAGS += -D__DIFF_REF_QEMU__
-else ifeq ($(DIFF),kvm)
-	DIFF_REF_PATH = $(NEMU_HOME)/tools/kvm-diff
-	DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-kvm-so
-	CFLAGS += -D__DIFF_REF_KVM__
-else ifeq ($(DIFF),nemu)
-	DIFF_REF_PATH = $(NEMU_HOME)
-	DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-nemu-interpreter-so
-	CFLAGS += -D__DIFF_REF_NEMU__
-	MKFLAGS = ISA=$(ISA) SHARE=1 ENGINE=interpreter
-else
-	$(error invalid DIFF. Supported: qemu kvm nemu)
-endif
+	ifeq ($(DIFF),qemu)
+		DIFF_REF_PATH = $(NEMU_HOME)/tools/qemu-diff
+		DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-qemu-so
+		CFLAGS += -D__DIFF_REF_QEMU__
+	else ifeq ($(DIFF),kvm)
+		DIFF_REF_PATH = $(NEMU_HOME)/tools/kvm-diff
+		DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-kvm-so
+		CFLAGS += -D__DIFF_REF_KVM__
+	else ifeq ($(DIFF),nemu)
+		DIFF_REF_PATH = $(NEMU_HOME)
+		DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(ISA)-nemu-interpreter-so
+		CFLAGS += -D__DIFF_REF_NEMU__
+		MKFLAGS = ISA=$(ISA) SHARE=1 ENGINE=interpreter
+	else
+		$(error invalid DIFF. Supported: qemu kvm nemu)
+	endif
 endif
 
 OBJ_DIR ?= $(BUILD_DIR)/obj-$(ISA)-$(ENGINE)$(SO)
@@ -118,7 +118,7 @@ override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += --diff=$(DIFF_REF_SO)
 
 # Command to execute NEMU
-IMG :=
+IMG := 
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 $(BINARY): $(OBJS)

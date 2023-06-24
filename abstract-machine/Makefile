@@ -1,4 +1,4 @@
-# Makefile for AbstractMachine Kernels and Libraries
+# Makefile for Abstract Machine Kernels and Libraries
 
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
 html:

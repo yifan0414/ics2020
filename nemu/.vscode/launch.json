@@ -9,6 +9,8 @@
             "args": [
                 "--log=./build/nemu-log.txt",
                 "--diff=${workspaceFolder}/tools/kvm-diff/build/x86-kvm-so",
+                // "-l /home/suyi/ics2020/am-kernels/tests/cpu-tests/build/nemu-log.txt",
+                "/home/suyi/ics2020/am-kernels/tests/cpu-tests/build/dummy-x86-nemu.bin"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

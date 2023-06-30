@@ -11,6 +11,7 @@
     *dest = concat(c_, name) (*src1, *src2); \
   }
 
+// 对立即数的基本操作
 #define def_rtl_compute_imm(name) \
   static inline def_rtl(name ## i, rtlreg_t* dest, const rtlreg_t* src1, const sword_t imm) { \
     *dest = concat(c_, name) (*src1, imm); \

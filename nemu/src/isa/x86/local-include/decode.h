@@ -302,6 +302,12 @@ static inline def_DHelper(push_r) {
   decode_r(s);
 }
 
+// 0x31 xor 
+
+static inline def_DHelper(xor_G2E) {
+  operand_rm(s, id_dest, false, id_src1, true);
+}
+
 static inline void operand_write(DecodeExecState *s, Operand *op, rtlreg_t* src) {
   if (op->type == OP_TYPE_REG) { rtl_sr(s, op->reg, src, op->width); }
   else if (op->type == OP_TYPE_MEM) { rtl_sm(s, s->isa.mbase, s->isa.moff, src, op->width); }

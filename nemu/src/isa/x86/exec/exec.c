@@ -76,6 +76,7 @@ again:
   s->opcode = opcode; // 为什么这里的 opcode 是 32 位呢
   switch (opcode) {
     EX   (0x0f, 2byte_esc)
+    IDEX (0x31, xor_G2E, xor)
     IDEX (0x50, push_r, push) 
     IDEX (0x51, push_r, push) 
     IDEX (0x52, push_r, push) 

@@ -11,7 +11,11 @@ static inline def_EHelper(and) {
 }
 
 static inline def_EHelper(xor) {
-  TODO();
+  rtl_xor(s, ddest, ddest, dsrc1);
+  rtl_li(s, s0, 0);
+  rtl_set_CF(s, s0);
+  rtl_set_OF(s, s0);
+  rtl_update_ZFSF(s, ddest, id_dest->width);
   print_asm_template2(xor);
 }
 

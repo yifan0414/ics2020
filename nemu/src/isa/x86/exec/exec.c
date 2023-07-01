@@ -84,6 +84,7 @@ again:
     IDEX (0x55, push_r, push) 
     IDEX (0x56, push_r, push) 
     IDEX (0x57, push_r, push) 
+    IDEX (0x68, push_SI, push)
     IDEXW(0x80, I2E, gp1, 1)
     IDEX (0x81, I2E, gp1)
     IDEX (0x83, SI2E, gp1)

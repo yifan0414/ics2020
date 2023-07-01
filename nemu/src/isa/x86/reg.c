@@ -52,6 +52,15 @@ void isa_reg_display() {
 	printf("esi\t" FMT_WORD "\t%d\n", cpu.esi, cpu.esi);
 	printf("edi\t" FMT_WORD "\t%d\n", cpu.edi, cpu.edi);
 	printf("eip\t" FMT_WORD "\n", cpu.pc); // 是否可以输出当前模拟器执行的函数?
+	printf("eflags\t" FMT_WORD "\t[ ", cpu.eflags.val);
+  if (cpu.eflags.CF == 1) printf("CF ");
+  if (cpu.eflags.PF == 1) printf("PF ");
+  if (cpu.eflags.AF == 1) printf("AF ");
+  if (cpu.eflags.ZF == 1) printf("ZF ");
+  if (cpu.eflags.SF == 1) printf("SF ");
+  if (cpu.eflags.IF == 1) printf("IF ");
+  if (cpu.eflags.OF == 1) printf("OF ");
+  printf("]\n");
 }
 
 // 这个函数将寄存器名字返回寄存器

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.json": "jsonc",
+        "*.txt": "c",
         "trap.h": "c",
         "isa.h": "c",
         "decode.h": "c",
@@ -25,7 +26,10 @@
         "cc.h": "c",
         "typeinfo": "c",
         "debug.h": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "rtl.h": "c",
+        "rtl-basic.h": "c",
+        "pseudo.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "current file",

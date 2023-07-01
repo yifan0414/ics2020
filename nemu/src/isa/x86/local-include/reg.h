@@ -30,4 +30,12 @@ static inline const char* reg_name(int index, int width) {
   }
 }
 
+static inline bool is_zero(const rtlreg_t result) {
+  return result == 0;
+}
+
+static inline bool is_sign(const rtlreg_t* result, int width) {
+  return (*result >> (width * 8 - 1)) & 0x1;
+}
+
 #endif

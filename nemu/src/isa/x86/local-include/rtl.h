@@ -40,19 +40,26 @@ static inline def_rtl(pop, rtlreg_t* dest) {
 static inline def_rtl(is_sub_overflow, rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1, const rtlreg_t* src2, int width) {
   // dest <- is_overflow(src1 - src2)
-  TODO();
+  if ((is_sign(src1, width) && !is_sign(src2, width) && !is_sign(res, width)) ||
+      (!is_sign(src1, width) && is_sign(src2, width) && is_sign(res, width))) {
+        *dest = 0x1; 
+      } else {
+        *dest = 0x0;
+      }
 }
 
 static inline def_rtl(is_sub_carry, rtlreg_t* dest,
     const rtlreg_t* src1, const rtlreg_t* src2) {
   // dest <- is_carry(src1 - src2)
-  TODO();
+  *dest = *src1 < *src2;
 }
 
 static inline def_rtl(is_add_overflow, rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1, const rtlreg_t* src2, int width) {
   // dest <- is_overflow(src1 + src2)
-  TODO();
+  if (is_sign(src1, width) == is_sign(src2, width)) {
+    *dest = is_sign(src1, width) == is_sign(res, width);
+  }
 }
 
 static inline def_rtl(is_add_carry, rtlreg_t* dest,
@@ -63,10 +70,10 @@ static inline def_rtl(is_add_carry, rtlreg_t* dest,
 
 #define def_rtl_setget_eflags(f) \
   static inline def_rtl(concat(set_, f), const rtlreg_t* src) { \
-    TODO(); \
+    cpu.eflags.f = *src; \
   } \
   static inline def_rtl(concat(get_, f), rtlreg_t* dest) { \
-    TODO(); \
+    *dest = cpu.eflags.f; \
   }
 
 def_rtl_setget_eflags(CF)
@@ -76,12 +83,23 @@ def_rtl_setget_eflags(SF)
 
 static inline def_rtl(update_ZF, const rtlreg_t* result, int width) {
   // eflags.ZF <- is_zero(result[width * 8 - 1 .. 0])
-  TODO();
+  switch (width) {
+    case 1: cpu.eflags.ZF = is_zero((*result) & 0xff); return;
+    case 2: cpu.eflags.ZF = is_zero((*result) & 0xffff); return;
+    case 4: cpu.eflags.ZF = is_zero(*result); return;
+    default: assert(0);
+  }
 }
 
 static inline def_rtl(update_SF, const rtlreg_t* result, int width) {
   // eflags.SF <- is_sign(result[width * 8 - 1 .. 0])
-  TODO();
+  // switch (width) {
+  //   case 4: cpu.eflags.SF = (*result >> 31) & 0x1; return;
+  //   case 1: cpu.eflags.SF = (*result >> 7) & 0x1; return;
+  //   case 2: cpu.eflags.SF = (*result >> 15) & 0x1; return;
+  //   default: assert(0);
+  // }
+  cpu.eflags.SF = is_sign(result, width);
 }
 
 static inline def_rtl(update_ZFSF, const rtlreg_t* result, int width) {

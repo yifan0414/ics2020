@@ -31,7 +31,8 @@ static inline def_EHelper(call) {
 }
 
 static inline def_EHelper(ret) {
-  TODO();
+  rtl_pop(s, &s->seq_pc);
+  rtl_j(s, s->seq_pc);
   print_asm("ret");
 }
 

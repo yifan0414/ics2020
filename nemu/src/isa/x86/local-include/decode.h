@@ -302,6 +302,11 @@ static inline def_DHelper(push_r) {
   decode_r(s);
 }
 
+// 0x58~0x5f pop reg
+static inline def_DHelper(pop_r) {
+  decode_r(s);
+}
+
 // 0x31 xor 
 
 static inline def_DHelper(xor_G2E) {

@@ -54,8 +54,13 @@ static inline def_DopHelper(SI) {
    *
    operand_imm(s, op, load_val, ???, op->width);
    */
-  sword_t simm = instr_fetch(&s->seq_pc, op->width); // 这里进行了符号扩展了吗?
-  operand_imm(s, op, load_val, simm, op->width);
+  if (op->width == 1) {
+    sword_t simm = (sword_t)(int8_t)instr_fetch(&s->seq_pc, op->width); // 符号扩展
+    operand_imm(s, op, load_val, simm, op->width);
+  } else {
+    sword_t simm = (sword_t)instr_fetch(&s->seq_pc, op->width);
+    operand_imm(s, op, load_val, simm, op->width);
+  }
 }
 
 /* I386 manual does not contain this abbreviation.

@@ -10,4 +10,4 @@
 !.gitignore
 !init.sh
 !/.vscode/*
-/am-kernels
+!/am-kernels/*

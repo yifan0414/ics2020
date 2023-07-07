@@ -108,6 +108,7 @@ static inline def_DopHelper(O) {
 
 /* Eb <- Gb
  * Ev <- Gv
+ * 两个操作数都需要从内存中读取, 才会用到
  */
 static inline def_DHelper(G2E) {
   operand_rm(s, id_dest, true, id_src1, true);
@@ -315,7 +316,7 @@ static inline def_DHelper(pop_r) {
 // 0x31 xor 
 
 static inline def_DHelper(xor_G2E) {
-  operand_rm(s, id_dest, false, id_src1, true);
+  operand_rm(s, id_dest, true, id_src1, true);
 }
 
 static inline void operand_write(DecodeExecState *s, Operand *op, rtlreg_t* src) {

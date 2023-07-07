@@ -66,7 +66,11 @@ static inline def_rtl(is_add_overflow, rtlreg_t* dest,
 static inline def_rtl(is_add_carry, rtlreg_t* dest,
     const rtlreg_t* res, const rtlreg_t* src1) {
   // dest <- is_carry(src1 + src2)
-  TODO();
+  if (*res < *src1) {
+    *dest = 0x1;
+  } else {
+    *dest = 0x0;
+  }
 }
 
 #define def_rtl_setget_eflags(f) \

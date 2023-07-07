@@ -14,7 +14,7 @@ static inline void set_width(DecodeExecState *s, int width) {
 /* 0x80, 0x81, 0x83 */
 static inline def_EHelper(gp1) {
   switch (s->isa.ext_opcode) {
-    EMPTY(0) EMPTY(1) EMPTY(2) EMPTY(3)
+    EX(0, add) EMPTY(1) EMPTY(2) EMPTY(3)
     EX(4, and) EX(5, sub) EMPTY(6) EMPTY(7)
   }
 }
@@ -75,7 +75,9 @@ again:
   opcode = instr_fetch(&s->seq_pc, 1);
   s->opcode = opcode; // 为什么这里的 opcode 是 32 位呢
   switch (opcode) {
+    IDEX (0x01, G2E, add);
     EX   (0x0f, 2byte_esc)
+    IDEX (0x29, G2E, sub);
     IDEX (0x31, xor_G2E, xor)
     IDEX (0x50, push_r, push) 
     IDEX (0x51, push_r, push) 

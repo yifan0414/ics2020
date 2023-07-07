@@ -11,7 +11,7 @@ static inline void operand_reg(DecodeExecState *s, Operand *op, bool load_val, i
     op->preg = &reg_l(r);
   } else {
     assert(width == 1 || width == 2);
-    op->preg = &op->val;
+    op->preg = &op->val; // 为什么不直接用reg_b(r)或reg_w(r)？
     if (load_val) rtl_lr(s, &op->val, r, width);
   }
 
@@ -126,6 +126,10 @@ static inline def_DHelper(E2G) {
 }
 
 static inline def_DHelper(mov_E2G) {
+  operand_rm(s, id_src1, true, id_dest, false);
+}
+
+static inline def_DHelper(movzx_E2G) {
   operand_rm(s, id_src1, true, id_dest, false);
 }
 

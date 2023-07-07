@@ -65,6 +65,7 @@ static inline def_EHelper(2byte_esc) {
   switch (opcode) {
   /* TODO: Add more instructions!!! */
     IDEX (0x01, gp7_E, gp7)
+    IDEX (0x94, setcc_E, setcc)
     default: exec_inv(s);
   }
 }
@@ -79,6 +80,7 @@ again:
     EX   (0x0f, 2byte_esc)
     IDEX (0x29, G2E, sub);
     IDEX (0x31, xor_G2E, xor)
+    IDEX (0x3b, G2E, cmp)
     IDEX (0x50, push_r, push) 
     IDEX (0x51, push_r, push) 
     IDEX (0x52, push_r, push) 

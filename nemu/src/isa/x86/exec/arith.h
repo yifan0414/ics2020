@@ -7,6 +7,7 @@ static inline def_EHelper(add) {
   rtl_set_OF(s, s1);
   rtl_is_add_carry(s, s1, ddest, dsrc1);
   rtl_set_CF(s, s1);
+  operand_write(s, id_dest, s0);
   print_asm_template2(add);
 }
 
@@ -21,8 +22,14 @@ static inline def_EHelper(sub) {
   print_asm_template2(sub);
 }
 
+// 和 sub 类似，但只改变标志位
 static inline def_EHelper(cmp) {
-  TODO();
+  rtl_sub(s, s0, ddest, dsrc1);
+  rtl_update_ZFSF(s, s0, id_dest->width);
+  rtl_is_sub_overflow(s, s1, s0, ddest, dsrc1, id_dest->width);
+  rtl_set_OF(s, s1);
+  rtl_is_sub_carry(s, s1, ddest, dsrc1);
+  rtl_set_CF(s, s1);
   print_asm_template2(cmp);
 }
 

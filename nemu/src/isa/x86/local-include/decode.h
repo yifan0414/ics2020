@@ -206,6 +206,7 @@ static inline def_DHelper(gp7_E) {
 
 /* used by test in group3 */
 static inline def_DHelper(test_I) {
+  id_src1->width = id_dest->width;
   decode_op_I(s, id_src1, true);
 }
 

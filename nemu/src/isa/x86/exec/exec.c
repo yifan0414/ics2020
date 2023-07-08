@@ -91,9 +91,10 @@ again:
   opcode = instr_fetch(&s->seq_pc, 1);
   s->opcode = opcode; // 为什么这里的 opcode 是 32 位呢
   switch (opcode) {
-    IDEX (0x01, G2E, add);
+    IDEX (0x01, G2E, add)
     EX   (0x0f, 2byte_esc)
-    IDEX (0x29, G2E, sub);
+    IDEX (0x21, G2E, and)
+    IDEX (0x29, G2E, sub)
     IDEX (0x31, xor_G2E, xor)
     IDEX (0x3b, G2E, cmp)
     IDEX (0x40, inc_r, inc)
@@ -141,7 +142,7 @@ again:
     IDEXW(0x80, I2E, gp1, 1)
     IDEX (0x81, I2E, gp1)
     IDEX (0x83, SI2E, gp1)
-    IDEX (0x84, G2E, test)
+    IDEXW(0x84, G2E, test, 1)
     IDEXW(0x88, mov_G2E, mov, 1)
     IDEX (0x89, mov_G2E, mov)
     IDEXW(0x8a, mov_E2G, mov, 1)

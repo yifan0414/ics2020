@@ -4,6 +4,7 @@ static inline def_EHelper(mov) {
 }
 
 static inline def_EHelper(push) {
+  id_dest->width = s->isa.is_operand_size_16 ? 2 : 4;
   rtl_push(s, ddest);
   print_asm_template1(push);
 }

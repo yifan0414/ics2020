@@ -184,6 +184,10 @@ static inline def_DHelper(I) {
   decode_op_I(s, id_dest, true);
 }
 
+static inline def_DHelper(SI) {
+  decode_op_SI(s, id_dest, true);
+}
+
 static inline def_DHelper(r) {
   decode_op_r(s, id_dest, true);
 }
@@ -302,30 +306,6 @@ static inline def_DHelper(out_a2dx) {
   operand_reg(s, id_dest, true, R_DX, 2);
 }
 
-// call
-static inline def_DHelper(call_rel) {
-  decode_I(s);
-}
-
-// push reg
-static inline def_DHelper(push_r) {
-  decode_r(s);
-}
-
-// 0x58~0x5f pop reg
-static inline def_DHelper(pop_r) {
-  decode_r(s);
-}
-
-// 0x31 xor 
-
-static inline def_DHelper(xor_G2E) {
-  operand_rm(s, id_dest, true, id_src1, true);
-}
-
-static inline def_DHelper(inc_r) {
-  decode_r(s);
-}
 
 static inline void operand_write(DecodeExecState *s, Operand *op, rtlreg_t* src) {
   if (op->type == OP_TYPE_REG) { rtl_sr(s, op->reg, src, op->width); }

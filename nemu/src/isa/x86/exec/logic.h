@@ -28,12 +28,14 @@ static inline def_EHelper(xor) {
 }
 
 static inline def_EHelper(or) {
-  TODO();
+  rtl_or(s, ddest, ddest, dsrc1);
+  operand_write(s, id_dest, ddest);
   print_asm_template2(or);
 }
 
 static inline def_EHelper(not) {
-  TODO();
+  rtl_not(s, ddest, ddest);
+  operand_write(s, id_dest, ddest);
   print_asm_template1(not);
 }
 

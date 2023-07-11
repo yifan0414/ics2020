@@ -11,3 +11,4 @@
 !init.sh
 !/.vscode/*
 !/am-kernels/*
+!/fceux-am/*

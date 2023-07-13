@@ -79,6 +79,25 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
     isa_reg_display();
+    printf("-----------------ref---------------------\n");
+    printf("eax\t" FMT_WORD "\t%d\n", ref->eax, ref->eax);
+    printf("ecx\t" FMT_WORD "\t%d\n", ref->ecx, ref->ecx);
+    printf("edx\t" FMT_WORD "\t%d\n", ref->edx, ref->edx);
+    printf("ebx\t" FMT_WORD "\t%d\n", ref->ebx, ref->ebx);
+    printf("esp\t0x%08x\n", ref->esp);
+    printf("ebp\t0x%08x\n", ref->ebp);
+    printf("esi\t" FMT_WORD "\t%d\n", ref->esi, ref->esi);
+    printf("edi\t" FMT_WORD "\t%d\n", ref->edi, ref->edi);
+    printf("eip\t" FMT_WORD "\n", ref->pc); // 是否可以输出当前模拟器执行的函数?
+    printf("eflags\t" FMT_WORD "\t[ ", ref->eflags.val);
+    if (ref->eflags.CF == 1) printf("CF ");
+    if (ref->eflags.PF == 1) printf("PF ");
+    if (ref->eflags.AF == 1) printf("AF ");
+    if (ref->eflags.ZF == 1) printf("ZF ");
+    if (ref->eflags.SF == 1) printf("SF ");
+    if (ref->eflags.IF == 1) printf("IF ");
+    if (ref->eflags.OF == 1) printf("OF ");
+    printf("]\n");
     nemu_state.state = NEMU_ABORT;
     nemu_state.halt_pc = pc;
   }

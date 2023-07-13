@@ -130,6 +130,7 @@ static inline def_DHelper(mov_E2G) {
 }
 
 static inline def_DHelper(movzx_E2G) {
+  id_src1->width = 1;
   operand_rm(s, id_src1, true, id_dest, false);
 }
 

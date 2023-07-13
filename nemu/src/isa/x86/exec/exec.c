@@ -65,7 +65,6 @@ static inline def_EHelper(2byte_esc) {
   switch (opcode) {
   /* TODO: Add more instructions!!! */
     IDEX (0x01, gp7_E, gp7)
-    IDEX (0xb6, movzx_E2G, movzx)
     IDEX (0x85, J, jcc)
     IDEXW(0x91, setcc_E, setcc, 1)
     IDEXW(0x92, setcc_E, setcc, 1)
@@ -83,6 +82,7 @@ static inline def_EHelper(2byte_esc) {
     IDEXW(0x9e, setcc_E, setcc, 1)
     IDEXW(0x9f, setcc_E, setcc, 1)
     IDEX (0xaf, E2G, imul2)
+    IDEX (0xb6, movzx_E2G, movzx)
     IDEX (0xb7, mov_Ew2G, movzx)
     IDEXW(0xbe, mov_E2G, movsx, 1)
     IDEX (0xbf, mov_Ew2G, movsx)
@@ -100,7 +100,7 @@ again:
     IDEXW(0x02, E2G, add, 1)
     IDEX (0x03, E2G, add)
     IDEX (0x09, G2E, or)
-    IDEX (0x0a, E2G, or)
+    IDEXW(0x0a, E2G, or, 1)
     EX   (0x0f, 2byte_esc)
     IDEX (0x13, E2G, adc)
     IDEX (0x1b, E2G, sbb)

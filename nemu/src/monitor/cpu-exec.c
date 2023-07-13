@@ -89,8 +89,8 @@ void cpu_exec(uint64_t n) {
 
 #ifdef DEBUG
     // 在命令行中输出执行过的汇编指令
-    // asm_print(this_pc, seq_pc - this_pc, n < MAX_INSTR_TO_PRINT);
-    asm_print(this_pc, seq_pc - this_pc, true);
+    asm_print(this_pc, seq_pc - this_pc, n < MAX_INSTR_TO_PRINT);
+    // asm_print(this_pc, seq_pc - this_pc, true);
 
     /* TODO: check watchpoints here. */
     WP* wp = get_wp();

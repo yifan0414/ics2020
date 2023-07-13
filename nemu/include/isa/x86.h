@@ -38,6 +38,7 @@ typedef struct {
       rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
     };
   };
+  vaddr_t pc;
   union {
     struct
     {
@@ -62,7 +63,6 @@ typedef struct {
     };
     rtlreg_t val;
   } eflags;
-  vaddr_t pc;
 } x86_CPU_state;
 
 // decode

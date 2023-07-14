@@ -75,8 +75,31 @@ static inline def_EHelper(movzx) {
   print_asm_template2(movzx);
 }
 
+
+static inline def_EHelper(movsb) {
+  operand_write(s, id_dest, dsrc1);
+  if (cpu.eflags.DF == 0) {
+    cpu.esi += id_dest->width;
+    cpu.edi += id_dest->width;
+  } else {
+    cpu.esi -= id_dest->width;
+    cpu.edi -= id_dest->width;
+  }
+  print_asm_template1(movsb);
+}
+
 static inline def_EHelper(lea) {
   rtl_addi(s, ddest, s->isa.mbase, s->isa.moff);
   operand_write(s, id_dest, ddest);
   print_asm_template2(lea);
+}
+
+static inline def_EHelper(stosb) {
+  operand_write(s, id_dest, dsrc1);
+  if (cpu.eflags.DF == 0) {
+    cpu.edi += id_dest->width;
+  } else {
+    cpu.edi -= id_dest->width;
+  }
+  print_asm_template1(stosb);
 }

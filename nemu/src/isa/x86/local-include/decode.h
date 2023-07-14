@@ -106,6 +106,38 @@ static inline def_DopHelper(O) {
   print_Dop(op->str, OP_STR_SIZE, "0x%x", s->isa.moff);
 }
 
+/* Yb, Yv */
+static inline def_DopHelper(Y) {
+  op->type = OP_TYPE_MEM;
+  if (s->isa.is_operand_size_16) {
+    s->isa.moff = reg_w(R_DI);
+  } else {
+    s->isa.moff = reg_l(R_EDI);
+  }
+  s->isa.mbase = rz;
+  if (load_val) {
+    rtl_lm(s, &op->val, s->isa.mbase, s->isa.moff, op->width);
+    op->preg = &op->val;
+  }
+  print_Dop(op->str, OP_STR_SIZE, "0x%x", s->isa.moff);
+}
+
+/* Xb, Xv */
+static inline def_DopHelper(X) {
+  op->type = OP_TYPE_MEM;
+  if (s->isa.is_operand_size_16) {
+    s->isa.moff = reg_w(R_SI);
+  } else {
+    s->isa.moff = reg_l(R_ESI);
+  }
+  s->isa.mbase = rz;
+  if (load_val) {
+    rtl_lm(s, &op->val, s->isa.mbase, s->isa.moff, op->width);
+    op->preg = &op->val;
+  }
+  print_Dop(op->str, OP_STR_SIZE, "0x%x", s->isa.moff);
+}
+
 /* Eb <- Gb
  * Ev <- Gv
  * 两个操作数都需要从内存中读取, 才会用到
@@ -317,6 +349,16 @@ static inline def_DHelper(mov_Ew2G) {
 static inline def_DHelper(cmp_I2A) {
   decode_op_I(s, id_src1, true);
   operand_reg(s, id_dest, true, R_AX, id_dest->width);
+}
+
+static inline def_DHelper(a2Y) {
+  decode_op_a(s, id_src1, true);
+  decode_op_Y(s, id_dest, false);
+}
+
+static inline def_DHelper(Y2X) {
+  decode_op_X(s, id_src1, true);
+  decode_op_Y(s, id_dest, false);
 }
 
 static inline void operand_write(DecodeExecState *s, Operand *op, rtlreg_t* src) {

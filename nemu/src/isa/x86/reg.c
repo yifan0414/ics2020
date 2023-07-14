@@ -59,6 +59,7 @@ void isa_reg_display() {
   if (cpu.eflags.ZF == 1) printf("ZF ");
   if (cpu.eflags.SF == 1) printf("SF ");
   if (cpu.eflags.IF == 1) printf("IF ");
+  if (cpu.eflags.DF == 1) printf("DF ");
   if (cpu.eflags.OF == 1) printf("OF ");
   printf("]\n");
 }

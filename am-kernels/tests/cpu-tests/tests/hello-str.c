@@ -4,9 +4,11 @@ char buf[128];
 
 int main() {
 	sprintf(buf, "%s", "Hello world!\n");
+  // printf("buf = %s", buf);
 	check(strcmp(buf, "Hello world!\n") == 0);
 
 	sprintf(buf, "%d + %d = %d\n", 1, 1, 2);
+  // printf("buf = %s", buf);
 	check(strcmp(buf, "1 + 1 = 2\n") == 0);
 
 	sprintf(buf, "%d + %d = %d\n", 2, 10, 12);

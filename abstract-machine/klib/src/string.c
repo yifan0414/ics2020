@@ -4,7 +4,11 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
-  return 0;
+  size_t n = 0;
+  while (*s++ != '\0') {
+    n++;
+  }
+  return n;
 }
 
 char *strcpy(char* dst,const char* src) {
@@ -16,11 +20,22 @@ char *strcpy(char* dst,const char* src) {
 }
 
 char* strncpy(char* dst, const char* src, size_t n) {
-  return NULL;
+  if (n == 0) return dst;
+  int i = 0;
+  do {
+    dst[i] = src[i];
+    n--;
+  } while(src[i++] != '\0' && n != 0);
+  return dst;
 }
 
 char* strcat(char* dst, const char* src) {
-  return NULL;
+  int i = strlen(dst);
+  while (*src != '\0') {
+    dst[i++] = *src++;
+  }
+  dst[i] = '\0';
+  return dst;
 }
 
 int strcmp(const char* s1, const char* s2) {

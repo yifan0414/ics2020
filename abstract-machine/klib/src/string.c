@@ -24,11 +24,24 @@ char* strcat(char* dst, const char* src) {
 }
 
 int strcmp(const char* s1, const char* s2) {
-  return 0;
+  while(*s1 && (*s1 == *s2)) {
+    s1++;
+    s2++;
+  }
+  return *(unsigned char*)s1 - *(unsigned char*)s2;
 }
 
 int strncmp(const char* s1, const char* s2, size_t n) {
-  return 0;
+  while (n && *s1 && (*s1 == *s2)) {
+      s1++;
+      s2++;
+      n--;
+  }
+  if (n == 0) {
+      return 0;
+  } else {
+      return *(unsigned char*)s1 - *(unsigned char*)s2;
+  }
 }
 
 void* memset(void* v,int c,size_t n) {
@@ -39,7 +52,18 @@ void* memset(void* v,int c,size_t n) {
 }
 
 void* memmove(void* dst,const void* src,size_t n) {
-  return NULL;
+  char *d = (char*) dst;
+  const char *s = (char*) src;
+  if (d > s) {
+    while (n--) {
+      d[n] = s[n];
+    }
+  } else {
+    while (n--) {
+      *d++ = *s++;
+    }
+  }
+  return dst;
 }
 
 void* memcpy(void* out, const void* in, size_t n) {

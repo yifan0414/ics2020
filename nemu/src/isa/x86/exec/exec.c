@@ -90,6 +90,22 @@ static inline def_EHelper(2byte_esc) {
   }
 }
 
+static inline def_EHelper(rep) {
+  uint8_t opcode = instr_fetch(&s->seq_pc, 1);
+  s->opcode = opcode;
+  while (cpu.ecx != 0) {
+    switch (opcode) {
+      IDEXW(0xa4, Y2X, movsb, 1)
+      IDEXW(0xaa, a2Y, stos, 1)
+      IDEX (0xab, a2Y, stos)
+      default: exec_inv(s);
+    }
+    cpu.ecx --;
+    if (cpu.ecx != 0)
+      difftest_step(cpu.pc, cpu.pc);
+  }
+}
+
 static inline void fetch_decode_exec(DecodeExecState *s) {
   uint8_t opcode;
 again:
@@ -182,7 +198,8 @@ again:
     IDEXW(0xa2, a2O, mov, 1)
     IDEX (0xa3, a2O, mov)
     IDEXW(0xa4, Y2X, movsb, 1)
-    IDEXW(0xaa, a2Y, stosb, 1)
+    IDEXW(0xaa, a2Y, stos, 1)
+    IDEX (0xab, a2Y, stos)
     IDEXW(0xb0, mov_I2r, mov, 1)
     IDEXW(0xb1, mov_I2r, mov, 1)
     IDEXW(0xb2, mov_I2r, mov, 1)
@@ -213,6 +230,7 @@ again:
     IDEX (0xe9, J, jmp)
     IDEX (0xe8, I, call)
     IDEXW(0xeb, J, jmp, 1)
+    EX   (0xf3, rep)
     IDEXW(0xf6, E, gp3, 1)
     IDEX (0xf7, E, gp3)
     IDEXW(0xfe, E, gp4, 1)

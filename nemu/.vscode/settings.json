@@ -32,7 +32,7 @@
         "pseudo.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
-    "todo-tree.tree.scanMode": "current file",
+    "todo-tree.tree.scanMode": "workspace only",
     "todo-tree.tree.showBadges": true,
     "todo-tree.tree.disableCompactFolders": false,
     "makefile.launchConfigurations": [

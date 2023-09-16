@@ -9,6 +9,8 @@ INC_PATH  = $(ROM_PATH)/gen/
 SRCS      = $(FCEUX_SRC) $(ROM_SRC)
 CFLAGS    = -DPSS_STYLE=1 -DFRAMESKIP -D__NO_FILE_SYSTEM__
 
+MAKEFLAGS += -j 8
+
 include $(AM_HOME)/Makefile
 
 $(FCEUX_SRC): $(ROM_SRC)

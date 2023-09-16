@@ -85,7 +85,7 @@ static inline def_EHelper(movsb) {
     cpu.esi -= id_dest->width;
     cpu.edi -= id_dest->width;
   }
-  print_asm_template1(movsb);
+  // print_asm_template1(movsb);
 }
 
 static inline def_EHelper(lea) {
@@ -94,12 +94,12 @@ static inline def_EHelper(lea) {
   print_asm_template2(lea);
 }
 
-static inline def_EHelper(stosb) {
+static inline def_EHelper(stos) {
   operand_write(s, id_dest, dsrc1);
   if (cpu.eflags.DF == 0) {
     cpu.edi += id_dest->width;
   } else {
     cpu.edi -= id_dest->width;
   }
-  print_asm_template1(stosb);
+  // print_asm_template1(stosb);
 }

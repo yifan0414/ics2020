@@ -2,6 +2,7 @@
 
 ISA=${1#*ISA=}
 CPUTEST_PATH=$NEMU_HOME/../am-kernels/tests/cpu-tests
+KLIBTEST_PATH+=$NEMU_HOME/../am-kernels/tests/klib-tests
 
 echo "compiling NEMU..."
 if make ISA=$ISA; then
@@ -12,14 +13,14 @@ else
 fi
 
 echo "compiling testcases..."
-if make -C $CPUTEST_PATH ARCH=$ISA-nemu &> /dev/null; then
+if make -C $CPUTEST_PATH ARCH=$ISA-nemu &> /dev/null && make -C $KLIBTEST_PATH ARCH=$ISA-nemu &> /dev/null; then
   echo "testcases compile OK"
 else
   echo "testcases compile error... exit..."
   exit
 fi
 
-files=`ls $CPUTEST_PATH/build/*-$ISA-nemu.bin`
+files=`ls $CPUTEST_PATH/build/*-$ISA-nemu.bin; ls $KLIBTEST_PATH/build/*-$ISA-nemu.bin`
 ori_log="build/nemu-log.txt"
 
 for file in $files; do

@@ -2,6 +2,7 @@ NAME = nemu
 
 ISA ?= x86
 ISAS = $(shell ls src/isa/)
+MAKEFLAGS += -j 8
 ifeq ($(filter $(ISAS), $(ISA)), ) # ISA must be valid
 	$(error Invalid ISA. Supported: $(ISAS))
 endif

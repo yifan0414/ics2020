@@ -57,6 +57,11 @@ static inline def_EHelper(shl) {
 }
 
 static inline def_EHelper(shr) {
+  if (cpu.pc == 0x100b90)
+  {
+    printf("%x %x\n", *ddest, *dsrc1);
+    printf("%d %d\n", id_dest->width, id_src1->width);    
+  }
   rtl_shr(s, ddest, ddest, dsrc1);
   operand_write(s, id_dest, ddest);
   // unnecessary to update CF and OF in NEMU

@@ -23,6 +23,7 @@ static inline def_EHelper(sub) {
 }
 
 // 和 sub 类似，但只改变标志位
+// BUG: maybe
 static inline def_EHelper(cmp) {
   rtl_sub(s, s0, ddest, dsrc1);
   rtl_update_ZFSF(s, s0, id_dest->width);
@@ -33,24 +34,29 @@ static inline def_EHelper(cmp) {
   print_asm_template2(cmp);
 }
 
+// BUG: maybe
 static inline def_EHelper(inc) {
   rtl_addi(s, s0, ddest, 1);
+  rtl_li(s, s2, 1);
   rtl_update_ZFSF(s, s0, id_dest->width);
-  rtl_is_add_overflow(s, s1, s0, ddest, dsrc1, id_dest->width);
+  rtl_is_add_overflow(s, s1, s0, ddest, s2, id_dest->width);
   rtl_set_OF(s, s1);
-  rtl_is_add_carry(s, s1, s0, dsrc1);
-  rtl_set_CF(s, s1);
+  // 不能有CF
+  // rtl_is_add_carry(s, s1, s0, dsrc1);
+  // rtl_set_CF(s, s1);
   operand_write(s, id_dest, s0);
   print_asm_template1(inc);
 }
 
 static inline def_EHelper(dec) {
   rtl_subi(s, s0, ddest, 1);
+  rtl_li(s, s2, 1);
   rtl_update_ZFSF(s, s0, id_dest->width);
-  rtl_is_sub_overflow(s, s1, s0, ddest, dsrc1, id_dest->width);
+  rtl_is_sub_overflow(s, s1, s0, ddest, s2, id_dest->width);
   rtl_set_OF(s, s1);
-  rtl_is_sub_carry(s, s1, ddest, dsrc1);
-  rtl_set_CF(s, s1);
+  // 不能有CF
+  // rtl_is_sub_carry(s, s1, ddest, dsrc1);
+  // rtl_set_CF(s, s1);
   operand_write(s, id_dest, s0);
   print_asm_template1(dec);
 }

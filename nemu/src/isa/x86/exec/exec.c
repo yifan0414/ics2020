@@ -14,7 +14,7 @@ static inline void set_width(DecodeExecState *s, int width) {
 /* 0x80, 0x81, 0x83 */
 static inline def_EHelper(gp1) {
   switch (s->isa.ext_opcode) {
-    EX(0, add) EMPTY(1) EMPTY(2) EX(3, sbb)
+    EX(0, add) EMPTY(1) EX(2, adc) EX(3, sbb)
     EX(4, and) EX(5, sub) EX(6, xor) EX(7, cmp)
   }
 }
@@ -31,7 +31,7 @@ static inline def_EHelper(gp2) {
 static inline def_EHelper(gp3) {
   switch (s->isa.ext_opcode) {
     IDEXW(0, test_I, test, 1) EMPTY(1) EX(2, not) EX(3, neg)
-    EX(4, mul) EX(5, imul1) EMPTY(6) EX(7, idiv)
+    EX(4, mul) EX(5, imul1) EX(6, div) EX(7, idiv)
   }
 }
 
@@ -65,7 +65,9 @@ static inline def_EHelper(2byte_esc) {
   switch (opcode) {
   /* TODO: Add more instructions!!! */
     IDEX (0x01, gp7_E, gp7)
+    IDEX (0x84, J, jcc)
     IDEX (0x85, J, jcc)
+    IDEX (0x87, J, jcc)
     IDEXW(0x91, setcc_E, setcc, 1)
     IDEXW(0x92, setcc_E, setcc, 1)
     IDEXW(0x93, setcc_E, setcc, 1)
@@ -85,6 +87,7 @@ static inline def_EHelper(2byte_esc) {
     IDEX (0xb6, movzx_E2G, movzx)
     IDEX (0xb7, mov_Ew2G, movzx)
     IDEXW(0xbe, mov_E2G, movsx, 1)
+    IDEX (0xbd, E2G, bsr)
     IDEX (0xbf, mov_Ew2G, movsx)
     default: exec_inv(s);
   }
@@ -117,8 +120,11 @@ again:
     IDEX (0x03, E2G, add)
     IDEX (0x09, G2E, or)
     IDEXW(0x0a, E2G, or, 1)
+    IDEX (0x0b, E2G, or)
     EX   (0x0f, 2byte_esc)
+    IDEX (0x11, G2E, adc)
     IDEX (0x13, E2G, adc)
+    IDEX (0x19, G2E, sbb)
     IDEX (0x1b, E2G, sbb)
     IDEX (0x21, G2E, and)
     IDEXW(0x22, E2G, and, 1)
@@ -231,7 +237,10 @@ again:
     IDEX (0xe9, J, jmp)
     IDEX (0xe8, I, call)
     IDEXW(0xeb, J, jmp, 1)
-    IDEXW(0xee, out_a2dx, out, 1)
+    IDEXW(0xec, in_dx2a, inb, 1)
+    IDEX (0xed, in_dx2a, in)
+    IDEXW(0xee, out_a2dx, outb, 1)
+    IDEX (0xef, out_a2dx, out)
     EX   (0xf3, rep)
     IDEXW(0xf6, E, gp3, 1)
     IDEX (0xf7, E, gp3)

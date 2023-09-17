@@ -44,12 +44,32 @@ static inline def_EHelper(iret) {
 #endif
 }
 
-static inline def_EHelper(in) {
-  TODO();
+static inline def_EHelper(inb) {
+  rtl_li(s, s0, pio_read_b(*dsrc1));
+  operand_write(s, id_dest, s0);
   print_asm_template2(in);
 }
 
-static inline def_EHelper(out) {
+static inline def_EHelper(in) {
+  if (s->isa.is_operand_size_16 == 2) {
+    rtl_li(s, s0, pio_read_w(*dsrc1));
+  } else if (s->isa.is_operand_size_16 == 4) {
+    rtl_li(s, s0, pio_read_l(*dsrc1));
+  }
+  operand_write(s, id_dest, s0);
+  print_asm_template2(in);
+}
+
+static inline def_EHelper(outb) {
   pio_write_b(*ddest, *dsrc1);
+  print_asm_template2(out);
+}
+
+static inline def_EHelper(out) {
+  if (s->isa.is_operand_size_16 == 2) {
+    pio_write_w(*ddest, *dsrc1);
+  } else if (s->isa.is_operand_size_16 == 4){
+    pio_write_l(*ddest, *dsrc1);
+  }
   print_asm_template2(out);
 }

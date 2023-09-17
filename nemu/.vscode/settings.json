@@ -29,7 +29,8 @@
         "*.tcc": "c",
         "rtl.h": "c",
         "rtl-basic.h": "c",
-        "pseudo.h": "c"
+        "pseudo.h": "c",
+        "all-instr.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "workspace only",

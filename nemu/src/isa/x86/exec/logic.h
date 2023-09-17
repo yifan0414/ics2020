@@ -71,3 +71,14 @@ static inline def_EHelper(setcc) {
 
   print_asm("set%s %s", get_cc_name(cc), id_dest->str);
 }
+
+static inline def_EHelper(rol) {
+  // printf("rol ddest 0x%x(width %d); dsrc1 0x%x ", *ddest, id_dest->width, *dsrc1, id_src2->width);
+  // if (*dsrc1 != 0 && *dsrc1 < id_dest->width * 8 && *dsrc1 <= id_dest->width * 8)
+  *ddest = (*ddest << *dsrc1) | (*ddest >> (id_dest->width * 8 - *dsrc1));
+  // printf("result 0x%x\n", *ddest);
+  operand_write(s, id_dest, ddest);
+  rtl_update_ZFSF(s, ddest, id_dest->width);
+
+  print_asm_template2(rol);
+}

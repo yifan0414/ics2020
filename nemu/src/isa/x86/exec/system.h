@@ -50,6 +50,6 @@ static inline def_EHelper(in) {
 }
 
 static inline def_EHelper(out) {
-  TODO();
+  pio_write_b(*ddest, *dsrc1);
   print_asm_template2(out);
 }

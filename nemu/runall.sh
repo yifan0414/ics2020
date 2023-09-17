@@ -2,7 +2,7 @@
 
 ISA=${1#*ISA=}
 CPUTEST_PATH=$NEMU_HOME/../am-kernels/tests/cpu-tests
-KLIBTEST_PATH+=$NEMU_HOME/../am-kernels/tests/klib-tests
+KLIBTEST_PATH=$NEMU_HOME/../am-kernels/tests/klib-tests
 
 echo "compiling NEMU..."
 if make ISA=$ISA; then

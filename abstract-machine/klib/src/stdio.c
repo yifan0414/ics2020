@@ -1,26 +1,27 @@
 #include <am.h>
-#include <klib.h>
 #include <klib-macros.h>
+#include <klib.h>
+#include <limits.h>
 #include <stdarg.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int puts(const char *s) {
-    while (*s != '\0') {
-        putch(*s++);
-    }
-    // putch('\n');
+  while (*s != '\0') {
+    putch(*s++);
+  }
+  // putch('\n');
 
-    return 1;
+  return 1;
 }
 
 int vprintf(const char *fmt, va_list ap) {
-    char buffer[256];
-    int retval = vsprintf(buffer, fmt, ap);
-    if (retval >= 0) {
-        puts(buffer);
-    }
-    return retval;
+  char buffer[256];
+  int retval = vsprintf(buffer, fmt, ap);
+  if (retval >= 0) {
+    puts(buffer);
+  }
+  return retval;
 }
 
 int printf(const char *fmt, ...) {
@@ -31,33 +32,38 @@ int printf(const char *fmt, ...) {
   return written;
 }
 
-
-void reverse(char* begin, char* end) {
-    while (begin < end) {
-        char temp = *begin;
-        *begin = *end;
-        *end = temp;
-        begin++;
-        end--;
-    }
+void reverse(char *begin, char *end) {
+  char *l = begin;
+  char *r = end;
+  while (l < r) {
+    char temp = *l;
+    *l = *r;
+    *r = temp;
+    l++;
+    r--;
+  }
 }
 
-void itoa(int value, char* str) {
-    char* start = str;
-    int is_negative = value < 0;
-    if (is_negative) {
-        value = -value;
-    }
-    do {
-        *str++ = '0' + value % 10;
-        value /= 10;
-    } while (value > 0);
+char *itoa(int value, char *str) {
+  char *start = str;
+  int is_negative = value < 0;
+  if (value == INT_MIN) {
+    strcpy(str, "-2147483648");
+    return str;
+  } else if (is_negative) {
+    value = -value;
+  }
+  do {
+    *str++ = '0' + value % 10;
+    value /= 10;
+  } while (value > 0);
 
-    if (is_negative) {
-        *str++ = '-';
-    }
-    *str = '\0';
-    reverse(start, str - 1);
+  if (is_negative) {
+    *str++ = '-';
+  }
+  *str = '\0';
+  reverse(start, str - 1);
+  return start;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
@@ -76,25 +82,25 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     str++;
 
     switch (*str) {
-      case 'd':
-        int_val = va_arg(ap, int);
-        char buffer[20];
-        itoa(int_val, buffer);
-        char *p = buffer;
-        while (*p != '\0') {
-          *out++ = *p++;
-          written++;
-        }
-        break;
-      case 's':
-        string_val = va_arg(ap, char *);
-        while (*string_val != '\0') {
-          *out++ = *string_val++;
-          written++;
-        }
-        break;
-      default:
-        break;
+    case 'd':
+      int_val = va_arg(ap, int);
+      char buffer[32];
+      itoa(int_val, buffer);
+      char *p = buffer;
+      while (*p != '\0') {
+        *out++ = *p++;
+        written++;
+      }
+      break;
+    case 's':
+      string_val = va_arg(ap, char *);
+      while (*string_val != '\0') {
+        *out++ = *string_val++;
+        written++;
+      }
+      break;
+    default:
+      break;
     }
   }
   *out = '\0';
@@ -110,12 +116,8 @@ int sprintf(char *out, const char *fmt, ...) {
   return retval;
 }
 
-int snprintf(char *str, size_t n, const char *fmt, ...) {
-  return 0;
-}
+int snprintf(char *str, size_t n, const char *fmt, ...) { return 0; }
 
-int vsnprintf(char *str, size_t n, const char *fmt, va_list ap) {
-  return 0;
-}
+int vsnprintf(char *str, size_t n, const char *fmt, va_list ap) { return 0; }
 
 #endif

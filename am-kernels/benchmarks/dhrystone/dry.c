@@ -358,7 +358,7 @@ static uint32_t uptime_ms() { return io_read(AM_TIMER_UPTIME).us / 1000; }
 #define Start_Timer() Begin_Time = uptime_ms()
 #define Stop_Timer()  End_Time   = uptime_ms()
 
-#define NUMBER_OF_RUNS		5000000 /* Default number of runs */
+#define NUMBER_OF_RUNS		500000 /* Default number of runs */
 #define PASS2
 
 #ifdef  NOSTRUCTASSIGN
@@ -941,7 +941,7 @@ int main ()
   printf ("Finished in %d ms\n", (int)User_Time);
   printf("==================================================\n");
   printf("Dhrystone %s         %d Marks\n", pass ? "PASS" : "FAIL",
-      880900 / (int)User_Time * NUMBER_OF_RUNS/ 5000000);
+      880900 / (int)User_Time * NUMBER_OF_RUNS/ 500000);
   printf("                   vs. 100000 Marks (i7-7700K @ 4.20GHz)\n");
 
   return 0;

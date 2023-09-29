@@ -44,7 +44,16 @@ static inline def_EHelper(not) {
 
 // BUG: 16位数算术右移的高位
 static inline def_EHelper(sar) {
+  bool flag = false;
+  if (s->isa.is_operand_size_16 == true) {
+    if ((*ddest >> 15 & 0x1) == 1) {
+      flag = true;
+    }
+  }
   rtl_sar(s, ddest, ddest, dsrc1);
+  if (flag == true) {
+    *ddest |= 0xffff;
+  }
   operand_write(s, id_dest, ddest);
   // unnecessary to update CF and OF in NEMU
   print_asm_template2(sar);

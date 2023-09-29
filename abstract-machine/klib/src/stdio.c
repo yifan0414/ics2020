@@ -15,109 +15,185 @@ int puts(const char *s) {
   return 1;
 }
 
-int vprintf(const char *fmt, va_list ap) {
-  char buffer[256];
-  int retval = vsprintf(buffer, fmt, ap);
-  if (retval >= 0) {
-    puts(buffer);
-  }
-  return retval;
-}
+// Maximum buffer: 65536
+char printf_buf[65536];
 
 int printf(const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  int written = vprintf(fmt, args);
+  vsprintf(printf_buf, fmt, args);
   va_end(args);
-  return written;
+  char *p = printf_buf;
+  while (*p) {
+    putch(*p);
+    p++;
+  }
+  return 0;
 }
 
-void reverse(char *begin, char *end) {
-  char *l = begin;
-  char *r = end;
-  while (l < r) {
-    char temp = *l;
-    *l = *r;
-    *r = temp;
-    l++;
-    r--;
-  }
-}
+static struct {
+  int lpad;
+  char pad_char;
+} pref;
 
-char *itoa(int value, char *str) {
-  char *start = str;
-  int is_negative = value < 0;
-  if (value == INT_MIN) {
-    strcpy(str, "-2147483648");
-    return str;
-  } else if (is_negative) {
-    value = -value;
-  }
-  do {
-    *str++ = '0' + value % 10;
-    value /= 10;
-  } while (value > 0);
+void sprint_basic_format(char** pout, char** pin, va_list* args) {
+  if (**pin == 's') {
+    char *p = va_arg(*args, char*);
+    while (*p) *(*pout)++ = *p++;
+  } else if (**pin == 'd') {
+    int val = va_arg(*args, int);
+    int f = 1;
+    if (val < 0) f = -1;
 
-  if (is_negative) {
-    *str++ = '-';
-  }
-  *str = '\0';
-  reverse(start, str - 1);
-  return start;
-}
-
-int vsprintf(char *out, const char *fmt, va_list ap) {
-  char *str;
-  char *string_val;
-  int int_val;
-  int written = 0;
-
-  for (str = (char *)fmt; *str != '\0'; str++) {
-    if (*str != '%') {
-      *out++ = *str;
-      written++;
-      continue;
+    int buf[24] = {0};
+    int i = 0;
+    for (; i < 10 && val; i++) {
+      buf[i] = (val % 10) * f;
+      val /= 10;
     }
 
-    str++;
+    if (i == 0) i++;
+    if (f == -1 && pref.pad_char == '0') *(*pout)++ = '-';
+    for (int j = 0; j < pref.lpad - i - (f == -1); j++)
+      *(*pout)++ = pref.pad_char;
+    if (f == -1 && pref.pad_char == ' ') *(*pout)++ = '-';
+    
+    for (i--; i >= 0; i--) {
+      *(*pout)++ = buf[i] + '0';
+    }
+  } else if (**pin == 'u') {
+    unsigned int val = va_arg(*args, unsigned int);
+    int buf[24] = {0};
+    int i = 0;
+    for (; i < 10 && val; i++) {
+      buf[i] = (val % 10);
+      val /= 10;
+    }
+    if (i == 0) i++;
+    for (int j = 0; j < pref.lpad - i; j++)
+      *(*pout)++ = pref.pad_char;
+    for (i--; i >= 0; i--) {
+      *(*pout)++ = buf[i] + '0';
+    }
+  } else if (**pin == 'x') {
+    const char hex_char[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    unsigned int val = va_arg(*args, unsigned int);
+    int buf[24] = {0};
+    int i = 0;
+    for (; i < 10 && val; i++) {
+      buf[i] = (val % 16);
+      val /= 16;
+    }
 
-    switch (*str) {
-    case 'd':
-      int_val = va_arg(ap, int);
-      char buffer[32];
-      itoa(int_val, buffer);
-      char *p = buffer;
-      while (*p != '\0') {
-        *out++ = *p++;
-        written++;
-      }
+    if (i == 0) i++;
+    for (int j = 0; j < pref.lpad - i; j++)
+      *(*pout)++ = pref.pad_char;
+    for (i--; i >= 0; i--) {
+      *(*pout)++ = hex_char[buf[i]];
+    }
+  } else if (**pin == 'c') {
+    char val = va_arg(*args, int);
+    *(*pout)++ = val;
+  } else if (**pin == 'p') {
+    *(*pout)++ = '0';
+    *(*pout)++ = 'x';
+    const char hex_char[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    unsigned int val = va_arg(*args, unsigned int);
+    int buf[24] = {0};
+    int i = 0;
+    for (; i < 10 && val; i++) {
+      buf[i] = (val % 16);
+      val /= 16;
+    }
+
+    if (i == 0) i++;
+    for (int j = 0; j < pref.lpad - i; j++)
+      *(*pout)++ = pref.pad_char;
+    for (i--; i >= 0; i--) {
+      *(*pout)++ = hex_char[buf[i]];
+    }
+  } else {
+    putch(**pin);
+    assert(false);
+  }
+  (*pin)++;
+}
+
+int sprint_read_pad(char** pout, char** pin) {
+  int sum = **pin - '0';
+  if (sum < 0 || sum > 9) return -1;
+  (*pin)++;
+  int ans = sprint_read_pad(pout, pin);
+  if (ans != -1) return sum * 10 + ans;
+  return sum;
+}
+
+void sprint_format(char** pout, char** pin, va_list* args) {
+  switch (**pin) {
+    case '%':
+      *(*pout)++ = '%';
       break;
-    case 's':
-      string_val = va_arg(ap, char *);
-      while (*string_val != '\0') {
-        *out++ = *string_val++;
-        written++;
-      }
+
+    case '0':
+      (*pin)++;
+      pref.pad_char = '0';
+      sprint_format(pout, pin, args);
       break;
+
+    case '1' ... '9':
+      pref.lpad = sprint_read_pad(pout, pin);
+      sprint_format(pout, pin, args);
+      break;
+
+    case 'l':
+      (*pin)++;
+      sprint_format(pout, pin, args);
+      break;
+
     default:
-      break;
+      sprint_basic_format(pout, pin, args);
+  }
+}
+
+int vsprintf(char *out, const char *fmt, va_list args) {
+  char *pout = out;
+  char *pin = (void*)fmt;
+  while (*pin) {
+    pref.lpad = 0;
+    pref.pad_char = ' ';
+    switch (*pin) {
+      case '%':
+        pin++;
+        sprint_format(&pout, &pin, &args);
+      default:
+        *pout = *pin;
+        pin++;
+        pout++;
     }
   }
-  *out = '\0';
-
-  return written;
+  
+  *pout = 0;
+  return pout - out;
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  int retval = vsprintf(out, fmt, ap);
-  va_end(ap);
-  return retval;
+  va_list args;
+  va_start(args, fmt);
+  int len = vsprintf(out, fmt, args);
+  va_end(args);
+  return len;
 }
 
-int snprintf(char *str, size_t n, const char *fmt, ...) { return 0; }
+int snprintf(char *out, size_t n, const char *fmt, ...) {
+  // TODO: Limit output size
+  va_list args;
+  va_start(args, fmt);
+  int len = vsprintf(out, fmt, args);
+  va_end(args);
+  return len;
+}
 
-int vsnprintf(char *str, size_t n, const char *fmt, va_list ap) { return 0; }
-
+int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
+  return 0;
+}
 #endif

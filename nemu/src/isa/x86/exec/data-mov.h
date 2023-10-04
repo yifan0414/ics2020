@@ -117,36 +117,36 @@ static inline def_EHelper(stos) {
 }
 
 // NO TEST
-static inline def_EHelper(bsr) {
-  id_dest->width = s->isa.is_operand_size_16 ? 2 : 4;
-  rtl_li(s, s1, 1);
-  int position = -1;
-  if (id_dest->width == 4) {
-    for (int i = 31; i != 0; i--) {
-      if (*dsrc1 & (1 << i)) {
-        position = i;
-        break;
-      }
-    }
-    if (position == -1) {
-      rtl_set_ZF(s, s1);
-    } else {
-      rtl_set_ZF(s, rz);
-      rtl_li(s, ddest, position);
-    }
-  } else {
-    for (int i = 31; i != 0; i--) {
-      if (*dsrc1 & (1 << i)) {
-        position = i;
-        break;
-      }
-    }
-    if (position == -1) {
-      rtl_set_ZF(s, s1);
-    } else {
-      rtl_set_ZF(s, rz);
-      rtl_li(s, ddest, position);
-    }
-  }
-  print_asm_template2(bsr);
-}
+// static inline def_EHelper(bsr) {
+//   id_dest->width = s->isa.is_operand_size_16 ? 2 : 4;
+//   rtl_li(s, s1, 1);
+//   int position = -1;
+//   if (id_dest->width == 4) {
+//     for (int i = 31; i != 0; i--) {
+//       if (*dsrc1 & (1 << i)) {
+//         position = i;
+//         break;
+//       }
+//     }
+//     if (position == -1) {
+//       rtl_set_ZF(s, s1);
+//     } else {
+//       rtl_set_ZF(s, rz);
+//       rtl_li(s, ddest, position);
+//     }
+//   } else {
+//     for (int i = 31; i != 0; i--) {
+//       if (*dsrc1 & (1 << i)) {
+//         position = i;
+//         break;
+//       }
+//     }
+//     if (position == -1) {
+//       rtl_set_ZF(s, s1);
+//     } else {
+//       rtl_set_ZF(s, rz);
+//       rtl_li(s, ddest, position);
+//     }
+//   }
+//   print_asm_template2(bsr);
+// }

@@ -92,3 +92,74 @@ static inline def_EHelper(rol) {
 
   print_asm_template2(rol);
 }
+
+static inline def_EHelper(ror) {
+  if (*dsrc1 != 0 && *dsrc1 < id_dest->width * 8 && *dsrc1 <= id_dest->width * 8)
+    *ddest = (*ddest >> *dsrc1) | (*ddest << (id_dest->width * 8 - *dsrc1));
+  operand_write(s, id_dest, ddest);
+  rtl_update_ZFSF(s, ddest, id_dest->width);
+
+  print_asm_template2(ror);
+}
+
+static inline def_EHelper(shld) {
+  if (*dsrc1 != 0 && *dsrc1 < id_src2->width * 8 && *dsrc1 <= id_dest->width * 8)
+    *ddest = (*ddest << *dsrc1) | (*dsrc2 >> (id_src2->width * 8 - *dsrc1));
+  operand_write(s, id_dest, ddest);
+  rtl_update_ZFSF(s, ddest, id_dest->width);
+  // unnecessary to update CF and OF in NEMU
+
+  print_asm_template3(shld);
+}
+
+static inline def_EHelper(shrd) {
+  if (*dsrc1 != 0 && *dsrc1 < id_src2->width * 8 && *dsrc1 <= id_dest->width * 8)
+    *ddest = (*ddest >> *dsrc1) | (*dsrc2 << (id_src2->width * 8 - *dsrc1));
+  operand_write(s, id_dest, ddest);
+  rtl_update_ZFSF(s, ddest, id_dest->width);
+  // unnecessary to update CF and OF in NEMU
+
+  print_asm_template3(shrd);
+}
+
+static inline def_EHelper(bsf) {
+  uint32_t mask = 1;
+  int cnt = 0;
+  while (*dsrc1) {
+    if (mask & *dsrc1) {
+      *ddest = cnt;
+      rtl_addi(s, s0, rz, 1);
+      rtl_update_ZF(s, s0, id_dest->width);
+      break;
+    }
+    cnt++;
+    if (cnt >= id_src1->width * 8) {
+      rtl_update_ZF(s, rz, id_dest->width);
+    }
+    mask <<= 1;
+  }
+  operand_write(s, id_dest, ddest);
+
+  print_asm_template2(bsf);
+}
+
+static inline def_EHelper(bsr) {
+  uint32_t mask = 1 << (id_src1->width * 8 - 1);
+  int cnt = id_src1->width * 8 - 1;
+  while (*dsrc1) {
+    if (mask & *dsrc1) {
+      *ddest = cnt;
+      rtl_addi(s, s0, rz, 1);
+      rtl_update_ZF(s, s0, id_dest->width);
+      break;
+    }
+    cnt--;
+    if (cnt < 0) {
+      rtl_update_ZF(s, rz, id_dest->width);
+    }
+    mask >>= 1;
+  }
+  operand_write(s, id_dest, ddest);
+
+  print_asm_template2(bsr);
+}

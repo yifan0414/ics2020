@@ -31,7 +31,13 @@
         "rtl-basic.h": "c",
         "pseudo.h": "c",
         "all-instr.h": "c",
-        "difftest.h": "c"
+        "difftest.h": "c",
+        "sdl.h": "c",
+        "sdl_main.h": "c",
+        "sdl_stdinc.h": "c",
+        "sdl_config.h": "c",
+        "_real_sdl_config.h": "c",
+        "sdl_platform.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "workspace only",

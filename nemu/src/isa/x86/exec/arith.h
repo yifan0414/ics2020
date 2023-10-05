@@ -31,6 +31,7 @@ static inline def_EHelper(cmp) {
   rtl_set_OF(s, s1);
   rtl_is_sub_carry(s, s1, ddest, dsrc1);
   rtl_set_CF(s, s1);
+
   print_asm_template2(cmp);
 }
 

@@ -10,7 +10,6 @@ void __am_timer_init() {
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   // AM_TIMER_UPTIME, AM 系统启动时间, 可读出系统启动后的微秒数
   // 怎么读出呢？
-  /* outl(RTC_ADDR, uptime->us); */
   uptime->us = (uint64_t)inl(RTC_ADDR + 4) * 1000000LL + inl(RTC_ADDR) - boot_time;
 }
 

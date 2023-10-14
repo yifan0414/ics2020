@@ -6,6 +6,7 @@
 typedef void(*io_callback_t)(uint32_t, int, bool);
 uint8_t* new_space(int size);
 
+// TODO: space 和 low(addr) 有什么区别？
 typedef struct {
   char *name;
   // we treat ioaddr_t as paddr_t here

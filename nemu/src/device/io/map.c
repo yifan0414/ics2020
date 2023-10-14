@@ -3,6 +3,7 @@
 #include <memory/vaddr.h>
 #include <device/map.h>
 
+// 这个是什么？物理世界中的设备地址？
 #define IO_SPACE_MAX (2 * 1024 * 1024)
 
 static uint8_t io_space[IO_SPACE_MAX] PG_ALIGN = {};

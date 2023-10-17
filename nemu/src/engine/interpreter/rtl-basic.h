@@ -104,7 +104,13 @@ static inline def_rtl(idiv64_r, rtlreg_t* dest,
 // memory
 
 static inline def_rtl(lm, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
+  if (cpu.pc >= 0x100651 && cpu.pc <= 0x100653){
+    printf("before vaddr: 0x%x\n", *dest);
+  } 
   *dest = vaddr_read(*addr + offset, len);
+  if (cpu.pc >= 0x100651 && cpu.pc <= 0x100653){
+    printf("after vaddr: 0x%x\n", *dest);
+  } 
 }
 
 static inline def_rtl(sm, const rtlreg_t* addr, word_t offset, const rtlreg_t* src1, int len) {

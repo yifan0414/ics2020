@@ -104,8 +104,19 @@ void read_ModR_M(DecodeExecState *s, Operand *rm, bool load_rm_val, Operand *reg
   if (reg != NULL) operand_reg(s, reg, load_reg_val, m.reg, reg->width);
   if (m.mod == 3) operand_reg(s, rm, load_rm_val, m.R_M, rm->width);
   else {
+    if (cpu.pc >= 0x100651 && cpu.pc <= 0x100653){
+      printf("before load_addr: 0x%x\n", rm->val);
+    } 
     load_addr(s, &m, rm);
+    if (cpu.pc >= 0x100651 && cpu.pc <= 0x100653){
+      printf("after load_addr: 0x%x 0x%x\n", *s->isa.mbase, s->isa.moff);
+      printf("after load_addr: 0x%x\n", rm->val);
+    } 
     if (load_rm_val) rtl_lm(s, &rm->val, s->isa.mbase, s->isa.moff, rm->width);
     rm->preg = &rm->val;
+    if (cpu.pc >= 0x100651 && cpu.pc <= 0x100653){
+      printf("after rtl_lm: 0x%x 0x%x\n", *s->isa.mbase, s->isa.moff);
+      printf("after rtl_lm: 0x%x\n", rm->val);
+    } 
   }
 }

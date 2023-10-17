@@ -8,7 +8,9 @@ void pio_write_w(ioaddr_t, uint32_t);
 void pio_write_b(ioaddr_t, uint32_t);
 
 static inline def_EHelper(lidt) {
-  TODO();
+  rtl_lms(s, &cpu.IDTR.limit, s->isa.mbase, 0, 2);
+  rtl_lm(s, &cpu.IDTR.base, s->isa.mbase, 2, 4);
+  printf("0x%x 0x%x\n", cpu.IDTR.limit, cpu.IDTR.base);
   print_asm_template1(lidt);
 }
 
@@ -27,7 +29,7 @@ static inline def_EHelper(mov_cr2r) {
 }
 
 static inline def_EHelper(int) {
-  TODO();
+  // raise_intr(s, );
   print_asm("int %s", id_dest->str);
 
 #ifndef __DIFF_REF_NEMU__

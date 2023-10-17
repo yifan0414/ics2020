@@ -27,7 +27,7 @@ else
 endif
 
 ifndef SHARE
-	DIFF ?= kvm
+	DIFF ?= qemu
 	ifneq ($(ISA),x86)
 		ifeq ($(DIFF),kvm)
 			DIFF = qemu

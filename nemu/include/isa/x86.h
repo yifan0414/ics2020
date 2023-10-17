@@ -30,8 +30,7 @@ typedef struct {
     } gpr[8];
 
     /* Do NOT change the order of the GPRs' definitions. 
-     * In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions
-     * in PA2 able to directly access these registers.
+     * In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions in PA2 able to directly access these registers.
      */
     struct 
     {
@@ -63,6 +62,12 @@ typedef struct {
     };
     rtlreg_t val;
   } eflags;
+
+  struct {
+      uint32_t limit;
+      uint32_t base;
+  } IDTR;
+
 } x86_CPU_state;
 
 // decode

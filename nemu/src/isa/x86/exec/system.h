@@ -7,10 +7,12 @@ void pio_write_l(ioaddr_t, uint32_t);
 void pio_write_w(ioaddr_t, uint32_t);
 void pio_write_b(ioaddr_t, uint32_t);
 
+void raise_intr(DecodeExecState *s, word_t NO, vaddr_t ret_addr);
+
 static inline def_EHelper(lidt) {
+  // BUG：注意这里不能直接使用 ddest, 无意义
   rtl_lms(s, &cpu.IDTR.limit, s->isa.mbase, 0, 2);
   rtl_lm(s, &cpu.IDTR.base, s->isa.mbase, 2, 4);
-  printf("0x%x 0x%x\n", cpu.IDTR.limit, cpu.IDTR.base);
   print_asm_template1(lidt);
 }
 
@@ -29,11 +31,13 @@ static inline def_EHelper(mov_cr2r) {
 }
 
 static inline def_EHelper(int) {
-  // raise_intr(s, );
+  raise_intr(s, *ddest, s->seq_pc);
+  
   print_asm("int %s", id_dest->str);
 
 #ifndef __DIFF_REF_NEMU__
-  difftest_skip_dut(1, 2);
+  // difftest_skip_dut(1, 2);
+  difftest_skip_ref();
 #endif
 }
 

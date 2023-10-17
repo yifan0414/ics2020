@@ -64,6 +64,10 @@ typedef struct {
   } eflags;
 
   struct {
+    uint16_t cs, ss, ds, es, fs, gs;
+  };
+
+  struct {
       uint32_t limit;
       uint32_t base;
   } IDTR;

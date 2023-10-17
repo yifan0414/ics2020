@@ -56,7 +56,7 @@ Context* kcontext(Area kstack, void (*entry)(void *), void *arg) {
 }
 
 void yield() {
-  asm volatile("int $0x81");
+  asm volatile("int $0x80");
 }
 
 bool ienabled() {

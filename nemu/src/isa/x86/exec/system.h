@@ -8,6 +8,7 @@ void pio_write_w(ioaddr_t, uint32_t);
 void pio_write_b(ioaddr_t, uint32_t);
 
 void raise_intr(DecodeExecState *s, word_t NO, vaddr_t ret_addr);
+void restore_intr(DecodeExecState *s);
 
 static inline def_EHelper(lidt) {
   // BUG：注意这里不能直接使用 ddest, 无意义
@@ -43,7 +44,7 @@ static inline def_EHelper(int) {
 }
 
 static inline def_EHelper(iret) {
-  TODO();
+  restore_intr(s);
   print_asm("iret");
 
 #ifndef __DIFF_REF_NEMU__

@@ -33,7 +33,13 @@ static inline def_EHelper(pusha) {
 }
 
 static inline def_EHelper(popa) {
-  TODO();
+  if (s->isa.is_operand_size_16 == 2) {
+    assert(0);
+  } else {
+    for (int i = R_EDI; i >= R_EAX; i--)
+      if (i == R_ESP) rtl_pop(s, s0);
+      else rtl_pop(s, &reg_l(i));
+  }
   print_asm("popa");
 }
 

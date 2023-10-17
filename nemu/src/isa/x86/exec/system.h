@@ -36,6 +36,7 @@ static inline def_EHelper(int) {
   print_asm("int %s", id_dest->str);
 
 #ifndef __DIFF_REF_NEMU__
+  // BUG: if use difftest_skip_dut(1, 2), pc for qemu will strange
   // difftest_skip_dut(1, 2);
   difftest_skip_ref();
 #endif

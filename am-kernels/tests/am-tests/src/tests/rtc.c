@@ -7,10 +7,11 @@ void rtc_test() {
     while(io_read(AM_TIMER_UPTIME).us / 1000000 < sec) ;
     rtc = io_read(AM_TIMER_RTC);
     printf("%d-%d-%d %02d:%02d:%02d GMT (", rtc.year, rtc.month, rtc.day, rtc.hour, rtc.minute, rtc.second);
+    unsigned long us = io_read(AM_TIMER_UPTIME).us;
     if (sec == 1) {
-      printf("%d second).\n", sec);
+      printf("%d %d second).\n",us, sec);
     } else {
-      printf("%d seconds).\n", sec);
+      printf("%d %d seconds).\n",us, sec);
     }
     sec ++;
   }

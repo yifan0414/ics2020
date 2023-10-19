@@ -16,8 +16,8 @@ static int used[N][N];
 static uint32_t color_buf[32 * 32];
 
 void redraw() {
-  int w = io_read(AM_GPU_CONFIG).width / N;
-  int h = io_read(AM_GPU_CONFIG).height / N;
+  int w = io_read(AM_GPU_CONFIG).width / N; // 屏幕高度 / 32
+  int h = io_read(AM_GPU_CONFIG).height / N; // 屏幕宽度 / 32
   int block_size = w * h;
   assert((uint32_t)block_size <= LENGTH(color_buf));
 
@@ -59,7 +59,7 @@ void update() {
       if (x1 >= 0 && x1 < N && y1 >= 0 && y1 < N && !used[x1][y1]) {
         x = x1; y = y1;
         used[x][y] = 1;
-        canvas[x][y] = p(init + step / 2);
+        canvas[x][y] = p(init + step / 2); // 保存了该单位的颜色信息
         break;
       }
       d = (d + 1) % 4;

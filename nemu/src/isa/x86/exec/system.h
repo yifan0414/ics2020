@@ -7,8 +7,13 @@ void pio_write_l(ioaddr_t, uint32_t);
 void pio_write_w(ioaddr_t, uint32_t);
 void pio_write_b(ioaddr_t, uint32_t);
 
+void raise_intr(DecodeExecState *s, word_t NO, vaddr_t ret_addr);
+void restore_intr(DecodeExecState *s);
+
 static inline def_EHelper(lidt) {
-  TODO();
+  // BUG：注意这里不能直接使用 ddest, 无意义
+  rtl_lms(s, &cpu.IDTR.limit, s->isa.mbase, 0, 2);
+  rtl_lm(s, &cpu.IDTR.base, s->isa.mbase, 2, 4);
   print_asm_template1(lidt);
 }
 
@@ -27,16 +32,19 @@ static inline def_EHelper(mov_cr2r) {
 }
 
 static inline def_EHelper(int) {
-  TODO();
+  raise_intr(s, *ddest, s->seq_pc);
+  
   print_asm("int %s", id_dest->str);
 
 #ifndef __DIFF_REF_NEMU__
-  difftest_skip_dut(1, 2);
+  // BUG: if use difftest_skip_dut(1, 2), pc for qemu will strange
+  // difftest_skip_dut(1, 2);
+  difftest_skip_ref();
 #endif
 }
 
 static inline def_EHelper(iret) {
-  TODO();
+  restore_intr(s);
   print_asm("iret");
 
 #ifndef __DIFF_REF_NEMU__

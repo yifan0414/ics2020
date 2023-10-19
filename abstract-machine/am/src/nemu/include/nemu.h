@@ -33,7 +33,7 @@
 #define AUDIO_SBUF_ADDR 0xa0800000
 
 extern char _pmem_start;
-#define PMEM_SIZE (128 * 1024 * 1024)
+#define PMEM_SIZE (128 * 1024 * 1024) //0x8000000
 #define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
 #define NEMU_PADDR_SPACE \
   RANGE(&_pmem_start, PMEM_END), \

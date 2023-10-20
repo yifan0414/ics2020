@@ -1,11 +1,11 @@
 #ifndef ARCH_H__
 #define ARCH_H__
 
-/* struct Context { */
-/*   uintptr_t esi, ebx, eax, eip, edx, eflags, ecx, cs, esp, edi, ebp; */
-/*   void *cr3; */
-/*   int irq; */
-/* }; */
+// struct Context {
+//   uintptr_t esi, ebx, eax, eip, edx, eflags, ecx, cs, esp, edi, ebp;
+//   void *cr3;
+//   int irq;
+// };
 
 struct Context {
   void* cr3;

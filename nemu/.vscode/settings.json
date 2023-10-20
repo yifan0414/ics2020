@@ -37,7 +37,8 @@
         "sdl_stdinc.h": "c",
         "sdl_config.h": "c",
         "_real_sdl_config.h": "c",
-        "sdl_platform.h": "c"
+        "sdl_platform.h": "c",
+        "log.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "todo-tree.tree.scanMode": "workspace only",

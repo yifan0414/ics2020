@@ -2,6 +2,7 @@
 *
 !*/
 !Makefile*
+!.root
 !*.[cSh]
 !.gitignore
 !README.md

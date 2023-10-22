@@ -3,6 +3,11 @@
 current_directory=$(basename "$(pwd)")
 ramdisk_path=~/ics2020/nanos-lite/build/ramdisk.img
 
+if [ "$current_directory" != "dummy" ] || [ "$current_directory" != "hello" ]; then
+    echo "当前目录不在 dummy 或 hello 文件夹下，退出脚本"
+    exit 1  # 退出脚本，可根据需要使用不同的退出状态码
+fi
+
 if [ "$1" = "x86" ]; then
     # 执行针对 x86 架构的命令
     make ISA=x86 -j8 && cp "build/${current_directory}-x86" $ramdisk_path

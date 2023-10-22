@@ -1,4 +1,5 @@
 #include <common.h>
+#include <fs.h>
 #include <syscall.h>
 
 #define SET_RETURN(val) c->GPRx = val;
@@ -10,26 +11,38 @@ void do_syscall(Context *c) {
   a[3] = c->GPR4;
 
   switch (a[0]) {
-    case SYS_exit:
-      halt(0);
-      break;
-    case SYS_yield:
-      yield();
-      SET_RETURN(0);
-      break;
-    case SYS_write:
-      assert(a[1] == 1 || a[1] == 2);
-      printf("len : %d\n", a[3]);
-      char* buf = (char *)a[2];
-      for (int i = 0; i < a[3]; i++) {
-        putch(buf[i]);
-      }
-      SET_RETURN(a[3]);
-      break;
-    case SYS_brk:
-      SET_RETURN(0);
-      break;
-      
-    default: panic("Unhandled syscall ID = %d", a[0]);
+  case SYS_exit:
+    halt(0);
+    break;
+  case SYS_yield:
+    yield();
+    SET_RETURN(0);
+    break;
+
+  case SYS_open:
+    SET_RETURN(fs_open((const char *)a[1], a[2], a[3]));
+    break;
+
+  case SYS_read:
+    SET_RETURN(fs_read(a[1], (void *)a[2], a[3]));
+    break;
+
+  case SYS_write:
+    SET_RETURN(fs_write(a[1], (void *)a[2], a[3]));
+    break;
+
+  case SYS_close:
+    SET_RETURN(fs_close(a[1]));
+    break;
+
+  case SYS_lseek:
+    SET_RETURN(fs_lseek(a[1], a[2], a[3]));
+    break;
+  case SYS_brk:
+    SET_RETURN(0);
+    break;
+
+  default:
+    panic("Unhandled syscall ID = %d", a[0]);
   }
 }

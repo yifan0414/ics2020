@@ -1,25 +1,22 @@
+#include <NDL.h>
 #include <stdio.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 int main() {
-  struct timeval start, now;
-  gettimeofday(&start, NULL);
+  NDL_Init(0);
+  int32_t start, now;
+  start = NDL_GetTicks();
 
   while (1) {
-    gettimeofday(&now, NULL);
-    int elapsed_time =
-        (now.tv_sec - start.tv_sec) * 1000000 + (now.tv_usec - start.tv_usec);
-    if (elapsed_time >= 1000000) {
+    now = NDL_GetTicks();
+    int elapsed_time = now - start;
+    if (elapsed_time >= 500) {
       printf("1/2 second has passed.\n");
-      printf("%ld %ld\n", now.tv_sec, now.tv_usec);
       start = now;
     }
-    // printf("%d\n", elapsed_time);
-    // if (elapsed_time >= 500000) {
-    //   break;
-    // }
   }
+  NDL_Quit();
 
   return 0;
 }

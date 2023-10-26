@@ -100,7 +100,9 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   } else {
     ret = ramdisk_write(buf, offset, len);
   }
-  file_table[fd].open_offset += ret;
+  if (fd != 0 && fd != 1 && fd != 2) {
+    file_table[fd].open_offset += ret;
+  }
   return ret;
 }
 

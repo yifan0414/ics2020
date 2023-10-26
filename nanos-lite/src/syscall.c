@@ -14,6 +14,7 @@ void do_syscall(Context *c) {
   case SYS_exit:
     halt(0);
     break;
+
   case SYS_yield:
     yield();
     SET_RETURN(0);
@@ -38,7 +39,19 @@ void do_syscall(Context *c) {
   case SYS_lseek:
     SET_RETURN(fs_lseek(a[1], a[2], a[3]));
     break;
+
   case SYS_brk:
+    SET_RETURN(0);
+    break;
+
+  case SYS_gettimeofday:;
+    struct timeval {
+      long int tv_sec;  /* seconds */
+      long int tv_usec; /* and microseconds */
+    };
+    uint64_t time = io_read(AM_TIMER_UPTIME).us;
+    ((struct timeval *)a[1])->tv_usec = time % 1000000;
+    ((struct timeval *)a[1])->tv_sec = time / 1000000;
     SET_RETURN(0);
     break;
 

@@ -67,12 +67,13 @@ int main(const char *args) {
   }
   int setting_id = -1;
 
+  printf("%s\n", setting_name);
   if      (strcmp(setting_name, "test" ) == 0) setting_id = 0;
   else if (strcmp(setting_name, "train") == 0) setting_id = 1;
   else if (strcmp(setting_name, "ref"  ) == 0) setting_id = 2;
   else {
     printf("Invalid mainargs: \"%s\"; "
-           "must be in {test, train, ref}\n", setting_name);
+           "must be in {test, train, ref}\n, strcmp = %d\n", setting_name, strcmp("ref", "ref"));
     halt(1);
   }
 

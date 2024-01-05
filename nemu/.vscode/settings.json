@@ -46,8 +46,8 @@
     "todo-tree.tree.disableCompactFolders": false,
     "makefile.launchConfigurations": [
         {
-            "cwd": "/home/yifansu/ics2020/nemu/build",
-            "binaryPath": "/home/yifansu/ics2020/nemu/build/x86-nemu-interpreter",
+            "cwd": "/home/suyi/ics2020/nemu/build",
+            "binaryPath": "/home/suyi/ics2020/nemu/build/x86-nemu-interpreter",
             "binaryArgs": []
         }
     ]

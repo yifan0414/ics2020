@@ -4,10 +4,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <assert.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
-static int screen_w = 0, screen_h = 0;
+static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
+static uint32_t* canvas;
 
 int _read(int fd, void *buf, size_t count);
 
@@ -47,10 +49,31 @@ void NDL_OpenCanvas(int *w, int *h) {
       if (strcmp(buf, "mmap ok") == 0) break;
     }
     close(fbctl);
+  } else {
+    if (*w == 0 && *h == 0) *w = screen_w, *h = screen_h;
+    canvas_w = *w; canvas_h = *h;
+    assert(canvas_w <= screen_w && canvas_h <= screen_h);
+    canvas = malloc(canvas_w * canvas_h * sizeof(uint32_t));
   }
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  if (x == 0 && y == 0 && w == 0 && h == 0) {
+    w = canvas_w, h = canvas_h;
+  }
+  FILE* fb_file = fopen("/dev/fb", "w");
+  uint32_t tmp0 = 0;
+  int h_offset = (screen_h - canvas_h) / 2, 
+      w_offset = (screen_w - canvas_w) / 2;
+  for (int i = -h_offset; i < screen_h - h_offset; i++)
+    for (int j = -w_offset; j < screen_w - w_offset; j++) {
+      // if (i >= 0 && j >= 0 && i < canvas_h && j < canvas_w) {
+        fwrite(&pixels[i * canvas_w + j], sizeof(uint32_t), 1, fb_file);
+      // } else {
+      //   fwrite(&tmp0, sizeof(uint32_t), 1, fb_file);
+      // }
+    }
+  fclose(fb_file);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
@@ -71,6 +94,9 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  FILE* dispinfo_file = fopen("/proc/dispinfo", "r");
+  fscanf(dispinfo_file, "WIDTH : %d\nHEIGHT:%d", &screen_w, &screen_h);
+  printf("screen_w : %d, screen_h : %d\n", screen_w, screen_h);
   printf("START\n");
   return 0;
 }

@@ -9,6 +9,9 @@ size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 size_t serial_write(const void *buf, size_t offset, size_t len);
 size_t events_read(void *buf, size_t offset, size_t len);
 
+size_t dispinfo_read(void *buf, size_t offset, size_t len);
+size_t fb_write(const void *buf, size_t offset, size_t len);
+
 typedef struct {
   char *name;
   size_t size;
@@ -35,7 +38,9 @@ static Finfo file_table[] __attribute__((used)) = {
     [FD_STDIN] = {"stdin", 0, 0, invalid_read, invalid_write},
     [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
     [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
+    [FD_FB] = {"/dev/fb", 0, 0, invalid_read, fb_write},
     {"/dev/events", 0, 0, events_read, invalid_write},
+    {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
 #include "files.h"
 };
 
@@ -47,6 +52,7 @@ int fs_open(const char *pathname, int flags, int mode) {
       return i;
     }
   }
+  printf("\npathname: %s\n", pathname);
   assert(0);
 }
 
@@ -112,4 +118,7 @@ int fs_close(int fd) { return 0; }
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+  AM_GPU_CONFIG_T cfg;
+  ioe_read(AM_GPU_CONFIG, &cfg);
+  file_table[FD_FB].size = cfg.width * cfg.height * sizeof(uint32_t);
 }

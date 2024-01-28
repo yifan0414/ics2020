@@ -28,11 +28,12 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   return snprintf(buf, len, "%s %s", ev.keydown ? "kd" : "ku", keyname[ev.keycode]);
 }
 
+// 应该是在 NDL.c 中的
+// fscanf(dispinfo_file, "WIDTH : %d\nHEIGHT:%d", &screen_w, &screen_h); 被调用
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   AM_GPU_CONFIG_T cfg;
   ioe_read(AM_GPU_CONFIG, &cfg);
   return sprintf(buf, "WIDTH : %d\nHEIGHT:%d", cfg.width, cfg.height);
-  return 0;
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
